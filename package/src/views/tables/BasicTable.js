@@ -11,7 +11,6 @@ import {
 import ExTable from "../dashboards/dashboard1-components/ExTable";
 import AddIcon from '@mui/icons-material/Add';
 import Axios from 'axios'
-
 const BasicTable = () => {
 
 
