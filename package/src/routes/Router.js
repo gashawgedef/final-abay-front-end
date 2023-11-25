@@ -1,5 +1,5 @@
 import { lazy } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate,Redirect } from "react-router-dom";
 
 /****Layouts*****/
 const FullLayout = lazy(() => import("../layouts/FullLayout/FullLayout.js"));
@@ -22,17 +22,14 @@ const ExSlider = lazy(() => import("../views/FormElements/ExSlider.js"));
 const ExSwitch = lazy(() => import("../views/FormElements/ExSwitch.js"));
 // form layouts
 const FormLayouts = lazy(() => import("../views/FormLayouts/FormLayouts.js"));
-
+const isLoggedIn=false;
 /*****Routes******/
 const ThemeRoutes = [
-  { path: "/login", exact: true, element: <Login /> },
+  { path: "/", exact: true, element: <Navigate to="/login" /> },
   {
     path: "/",
     element: <FullLayout />,
     children: [
-      { path: "/", element: <Navigate
- 
-to="dashboards/dashboard1" /> },
       { path: "dashboards/dashboard1", exact: true, element: <Dashboard1 /> },
       { path: "tables/basic-table", element: <BasicTable /> },
       { path: "/form-layouts/form-layouts", element: <FormLayouts /> },
@@ -43,6 +40,11 @@ to="dashboards/dashboard1" /> },
       { path: "/form-elements/slider", element: <ExSlider /> },
       { path: "/form-elements/switch", element: <ExSwitch /> },
     ],
+  },
+  {
+    path: "/login",
+    exact: true,
+    element: <Login />,
   },
 ];
 
