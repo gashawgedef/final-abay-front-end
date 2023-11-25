@@ -8,7 +8,6 @@ const FullLayout = lazy(() => import("../layouts/FullLayout/FullLayout.js"));
 /*****Pages******/
 const Dashboard1 = lazy(() => import("../views/dashboards/Dashboard1.js"));
 const Login = lazy(() => import("../views/dashboards/SignIn.js"));
-
 /*****Tables******/
 const BasicTable = lazy(() => import("../views/tables/BasicTable.js"));
 
@@ -26,15 +25,14 @@ const FormLayouts = lazy(() => import("../views/FormLayouts/FormLayouts.js"));
 
 /*****Routes******/
 const ThemeRoutes = [
-  {
-    path: "/login",
-    element: <Login />,
-  },
+  { path: "/login", exact: true, element: <Login /> },
   {
     path: "/",
     element: <FullLayout />,
     children: [
-      { path: "/", element: <Navigate to="dashboards/dashboard1" replace /> },
+      { path: "/", element: <Navigate
+ 
+to="dashboards/dashboard1" /> },
       { path: "dashboards/dashboard1", exact: true, element: <Dashboard1 /> },
       { path: "tables/basic-table", element: <BasicTable /> },
       { path: "/form-layouts/form-layouts", element: <FormLayouts /> },
