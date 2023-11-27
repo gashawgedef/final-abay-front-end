@@ -8,11 +8,13 @@ import Checkbox from "@mui/material/Checkbox";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { Alert, Card } from "@mui/material";
+import { Alert, Card, Divider } from "@mui/material";
+import LogoIcon from "../../layouts/FullLayout/Logo/LogoIcon";
 export default function SignIn() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -23,6 +25,7 @@ export default function SignIn() {
       setErrorMessage("Please provide a password");
     } else {
       try {
+        setIsLoading(true);
         const response = await axios.post("http://10.1.50.152:8080/api/login", {
           username,
           password,
@@ -33,23 +36,38 @@ export default function SignIn() {
       } catch (error) {
         setErrorMessage("Invalid username or password");
       }
+      finally {
+        setIsLoading(false); // Enable inputs and button
+      }
     }
   };
   return (
-    <Container component="main" maxWidth="xs">
-      <Typography variant="h2"></Typography>
-      <Card>
+    <Container component="main" maxWidth="xs" sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+       justifyContent: "center",
+       marginTop:"50px"
+      }}>
+      <Typography variant="h2" sx={{fontWeight:'600',fontFamily:'sans-serif'}}>Employee Tax Record System</Typography>
+      <Card sx={{border: "1px solid #ccc", backgroundColor: "#f8f8f8" }}>
         <Box
           sx={{
-            marginTop: 8,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
+            justifyContent: "center",
           }}
         >
-          <Typography component="h1" variant="h5">
-            Sign in
+
+        <Box sx={{ display: "flex", alignItems: "Center" }}>
+          <LogoIcon/>
+        </Box>
+        <Divider sx={{ my: 2 }} />
+          <Typography component="h1" variant="h2" sx={{fontFamily:"sans-serif",fontWeight:'600',fontSize:'15px'}}> 
+           Please Sign In
           </Typography>
+          <Divider sx={{ my: 2 }} />
 
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
@@ -62,6 +80,7 @@ export default function SignIn() {
               autoComplete="username"
               autoFocus
               onChange={(e) => setUsername(e.target.value)}
+              disabled={isLoading}
             />
             <TextField
               margin="normal"
@@ -73,20 +92,18 @@ export default function SignIn() {
               onChange={(e) => setPassword(e.target.value)}
               id="password"
               autoComplete="current-password"
+              disabled={isLoading}
             />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
-            <Button type="submit" fullWidth variant="contained">
-              Sign In
+             <Button type="submit" fullWidth variant="contained" disabled={isLoading}>
+              {isLoading ? "Signing In..." : "Sign In"} {/* Display appropriate text based on isLoading */}
             </Button>
+            <Divider sx={{ my: 2 }} />
 
             {errorMessage !== "" ? (
-              <div className="error">
-                <Alert severity="warning">{errorMessage}</Alert>
-              </div>
-            ) : null}
+  <div className="error">
+    <Alert severity="error">{errorMessage}</Alert>
+  </div>
+) : null}
           </Box>
         </Box>
       </Card>
