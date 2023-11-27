@@ -11,9 +11,14 @@ import {
 import ExTable from "../dashboards/dashboard1-components/ExTable";
 import AddIcon from '@mui/icons-material/Add';
 import Axios from 'axios'
+import {currentUser} from "../../utils/tokenUtils"
+
+
+// Function to decode a JWT token (example implementation)
+
 const BasicTable = () => {
-
-
+const user = currentUser();
+console.log(user);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [inputValues, setInputValues] = useState({
     employee_name: "",

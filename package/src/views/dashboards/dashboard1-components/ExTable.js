@@ -14,55 +14,22 @@ import {
 } from "@mui/material";
 import { IconButton } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
-
-// const products = [
-//   {
-//     id: "1",
-//     name: "Sunil Joshi",
-//     post: "Web Designer",
-//     pname: "Elite Admin",
-//     priority: "Low",
-//     pbg: "primary.main",
-//     budget: "3.9",
-//   },
-//   {
-//     id: "2",
-//     name: "Andrew McDownland",
-//     post: "Project Manager",
-//     pname: "Real Homes WP Theme",
-//     priority: "Medium",
-//     pbg: "secondary.main",
-//     budget: "24.5",
-//   },
-//   {
-//     id: "3",
-//     name: "Christopher Jamil",
-//     post: "Project Manager",
-//     pname: "MedicalPro WP Theme",
-//     priority: "High",
-//     pbg: "error.main",
-//     budget: "12.8",
-//   },
-//   {
-//     id: "4",
-//     name: "Nirav Joshi",
-//     post: "Frontend Engineer",
-//     pname: "Hosting Press HTML",
-//     priority: "Critical",
-//     pbg: "success.main",
-//     budget: "2.4",
-//   },
-// ];
+import {branch_employees} from "../../../services/employeeapi"
 
 const ExTable = () => {
   const[data,setData]=useState([])
-  useEffect(()=>{
-    fetch('http://127.0.0.1:8000/emplyee_tax/')
-    .then(response=>response.json())
-    .then(data=>setData(data))
-    .catch(error=>console.log(error))
-  })
-
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const employees = await branch_employees(67);
+        // Set the data in the state
+        setData(employees);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+ fetchData();
+  }, []); // Empty dependency array to run the effect only once
   const handleEdit = (row) => {
     // Handle edit action for the row
     console.log("Edit row", row);
@@ -136,8 +103,9 @@ const ExTable = () => {
         </TableRow>
       </TableHead>
       <TableBody>
-        {data.map((product) => (
-          <TableRow key={product.id}>
+       
+        {data.map((emp) => (
+          <TableRow key={emp.id}>
             <TableCell>
               <Typography
                 sx={{
@@ -145,37 +113,37 @@ const ExTable = () => {
                   fontWeight: "500",
                 }}
               >
-                {product.id}
+                {emp.id}
               </Typography>
             </TableCell>
             <TableCell align="right">
-              <Typography variant="h6">{product.employee_name}k</Typography>
+              <Typography variant="h6">{emp.Employee.User.Person.first_name} {emp.Employee.User.Person.middle_name} </Typography>
             </TableCell>
             <TableCell align="right">
-              <Typography variant="h6">{product.tin_no}</Typography>
+              <Typography variant="h6">{emp.position_id}</Typography>
             </TableCell>
             <TableCell>
               <Typography color="textSecondary" variant="h6">
-                {product.basic_salary}
+                {emp.salary}
               </Typography>
             </TableCell>
             <TableCell align="right">
-              <Typography variant="h6">{product.transport_allowance}  Birr</Typography>
+              <Typography variant="h6">  Birr</Typography>
             </TableCell>
             <TableCell align="right">
-              <Typography variant="h6">{product.additional_benefits} Birr</Typography>
+              <Typography variant="h6"> Birr</Typography>
             </TableCell>
             <TableCell align="right">
-              <Typography variant="h6">{product.taxable_income} Birr</Typography>
+              <Typography variant="h6"> Birr</Typography>
             </TableCell>
             <TableCell align="right">
-              <Typography variant="h6">{product.tax_with_hold} Birr</Typography>
+              <Typography variant="h6"> Birr</Typography>
             </TableCell>
             <TableCell align="right">
-              <Typography variant="h6">{product.net_pay} Birr</Typography>
+              <Typography variant="h6"> Birr</Typography>
             </TableCell>
             <TableCell align="right">
-              <Typography variant="h6">{product.additional_benefits} Birr</Typography>
+              <Typography variant="h6"> Birr</Typography>
             </TableCell>
             <TableCell>
               <IconButton onClick={() => handleEdit()} aria-label="Edit" color="primary">
