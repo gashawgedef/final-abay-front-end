@@ -55,6 +55,11 @@ const Menuitems = [
     icon: AutoAwesomeMosaicOutlinedIcon,
     href: "/tables/basic-table",
   },
+  {
+    title: " Feature Price",
+    icon: AutoAwesomeMosaicOutlinedIcon,
+    href: "/tables/price-table",
+  }
 ];
 
 export default Menuitems;
