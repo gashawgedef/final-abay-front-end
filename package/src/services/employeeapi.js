@@ -23,6 +23,18 @@ export const branch_employees = async (branch) => {
   }
 };
 
+export const branch_employees_salary = async(branch,month,year) => {
+  const url = `${BASE_URL}/people/employeedetails?branch=${encodeURIComponent(branch)}&month=${encodeURIComponent(month)}&year=${encodeURIComponent(year)}`;
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
 export const createEmployee = async (employeeData) => {
   const url = `${BASE_URL}/people/employee`;
 
@@ -41,5 +53,3 @@ export const createEmployee = async (employeeData) => {
     throw error;
   }
 };
-
-// Add more API request functions as needed

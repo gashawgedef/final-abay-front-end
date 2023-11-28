@@ -14,14 +14,16 @@ import {
 } from "@mui/material";
 import { IconButton } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
-import {branch_employees} from "../../../services/employeeapi"
+import {branch_employees,branch_employees_salary} from "../../../services/employeeapi"
 
 const ExTable = () => {
   const[data,setData]=useState([])
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const employees = await branch_employees(67);
+        //const employees = await branch_employees(67);
+        const employees = await branch_employees_salary(67,2,2023);
+        console.log(employees);
         // Set the data in the state
         setData(employees);
       } catch (error) {
@@ -52,11 +54,11 @@ const ExTable = () => {
         <TableRow>
         <TableCell>
             <Typography color="textSecondary" variant="h6">
-             Id Num
+             Emp_Id
             </Typography>
           </TableCell>
           <TableCell>
-            <Typography color="textSecondary" variant="h6">
+            <Typography align="left" color="textSecondary" variant="h6">
               Employee Name
             </Typography>
           </TableCell>
@@ -75,29 +77,10 @@ const ExTable = () => {
               Transport Allowance
             </Typography>
           </TableCell>
+
           <TableCell align="right">
             <Typography color="textSecondary" variant="h6">
-              Additional Benefits
-            </Typography>
-          </TableCell>
-          <TableCell align="right">
-            <Typography color="textSecondary" variant="h6">
-              Taxable Income
-            </Typography>
-          </TableCell>
-          <TableCell align="right">
-            <Typography color="textSecondary" variant="h6">
-              Tax With Hold
-            </Typography>
-          </TableCell>
-          <TableCell align="right">
-            <Typography color="textSecondary" variant="h6">
-              Net Pay
-            </Typography>
-          </TableCell>
-          <TableCell align="right">
-            <Typography color="textSecondary" variant="h6">
-              Branch Name
+              House Allowance
             </Typography>
           </TableCell>
         </TableRow>
@@ -128,29 +111,14 @@ const ExTable = () => {
               </Typography>
             </TableCell>
             <TableCell align="right">
-              <Typography variant="h6">  Birr</Typography>
+              <Typography variant="h6">{emp.allowance.transportAllowance}</Typography>
             </TableCell>
             <TableCell align="right">
-              <Typography variant="h6"> Birr</Typography>
-            </TableCell>
-            <TableCell align="right">
-              <Typography variant="h6"> Birr</Typography>
-            </TableCell>
-            <TableCell align="right">
-              <Typography variant="h6"> Birr</Typography>
-            </TableCell>
-            <TableCell align="right">
-              <Typography variant="h6"> Birr</Typography>
-            </TableCell>
-            <TableCell align="right">
-              <Typography variant="h6"> Birr</Typography>
+              <Typography variant="h6">{emp.allowance.house}</Typography>
             </TableCell>
             <TableCell>
               <IconButton onClick={() => handleEdit()} aria-label="Edit" color="primary">
                 <Edit />
-              </IconButton>
-              <IconButton onClick={() => handleDelete()} aria-label="Delete" color="error">
-                <Delete />
               </IconButton>
             </TableCell>
           </TableRow>
