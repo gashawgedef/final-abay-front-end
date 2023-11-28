@@ -51,12 +51,12 @@ const Menuitems = [
   // },
   
   {
-    title: " Tax Record",
+    title: " Employee List",
     icon: AutoAwesomeMosaicOutlinedIcon,
     href: "/tables/basic-table",
   },
   {
-    title: " Feature Price",
+    title: " Monthly Gas Price",
     icon: AutoAwesomeMosaicOutlinedIcon,
     href: "/tables/price-table",
   }
