@@ -1,7 +1,7 @@
-import React,{ useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import numeral from "numeral";
 import {
   Typography,
-  
   Table,
   TableBody,
   TableCell,
@@ -10,123 +10,147 @@ import {
   TableContainer,
   TablePagination,
   Paper
-
 } from "@mui/material";
-import { IconButton } from "@mui/material";
-import { Edit, Delete } from "@mui/icons-material";
-import {branch_employees,branch_employees_salary} from "../../../services/employeeapi"
-
-const ExTable = () => {
-  const[data,setData]=useState([])
+import { branch_employees_salary } from "../../../services/employeeapi";
+import {currentUser} from "../../../utils/tokenUtils"
+  const ExTable = () => {
+  const user = currentUser();
+  // const branch=user.branch_id;
+  const branch=67;
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [data, setData] = useState([]);
+  const currentDate = new Date();
+  const currentMonth = currentDate.getMonth() + 1; 
+  const currentYear = currentDate.getFullYear();
   useEffect(() => {
     const fetchData = async () => {
       try {
-        //const employees = await branch_employees(67);
-        const employees = await branch_employees_salary(67,2,2023);
-        console.log(employees);
-        // Set the data in the state
+        const employees = await branch_employees_salary(branch,currentMonth, currentYear);
         setData(employees);
       } catch (error) {
         console.log(error);
       }
     };
- fetchData();
-  }, []); // Empty dependency array to run the effect only once
-  const handleEdit = (row) => {
-    // Handle edit action for the row
-    console.log("Edit row", row);
+
+    fetchData();
+  }, []);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
   };
 
-  const handleDelete = (row) => {
-    // Handle delete action for the row
-    console.log("Delete row", row);
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
   };
   return (
     <TableContainer component={Paper}>
-    <Table
-      aria-label="simple table"
-      sx={{
-        mt: 3,
-        whiteSpace: "nowrap",
-      }}
-    >
-      <TableHead>
-        <TableRow>
-        <TableCell>
-            <Typography color="textSecondary" variant="h6">
-             Emp_Id
-            </Typography>
-          </TableCell>
+      <TablePagination
+        rowsPerPageOptions={[10, 25, 50]}
+        component="div"
+        count={data.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+      <Table
+        aria-label="simple table"
+        sx={{
+          mt: 3,
+          whiteSpace: "nowrap"
+        }}
+      >
+        <TableHead>
+          <TableRow>
           <TableCell>
-            <Typography align="left" color="textSecondary" variant="h6">
-              Employee Name
-            </Typography>
-          </TableCell>
-          <TableCell>
-            <Typography color="textSecondary" variant="h6">
-              Tin Number
-            </Typography>
-          </TableCell>
-          <TableCell>
-            <Typography color="textSecondary" variant="h6">
-              Basic Salary
-            </Typography>
-          </TableCell>
-          <TableCell>
-            <Typography color="textSecondary" variant="h6">
-              Transport Allowance
-            </Typography>
-          </TableCell>
+      <Typography color="textSecondary" variant="h6">
+        #
+      </Typography>
+    </TableCell>
 
-          <TableCell align="right">
-            <Typography color="textSecondary" variant="h6">
-              House Allowance
-            </Typography>
-          </TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-       
-        {data.map((emp) => (
-          <TableRow key={emp.id}>
             <TableCell>
-              <Typography
-                sx={{
-                  fontSize: "15px",
-                  fontWeight: "500",
-                }}
-              >
-                {emp.id}
+              <Typography color="textSecondary" variant="h6">
+                Emp_Id
               </Typography>
             </TableCell>
-            <TableCell align="right">
-              <Typography variant="h6">{emp.Employee.User.Person.first_name} {emp.Employee.User.Person.middle_name} </Typography>
-            </TableCell>
-            <TableCell align="right">
-              <Typography variant="h6">{emp.position_id}</Typography>
+            <TableCell>
+              <Typography align="left" color="textSecondary" variant="h6">
+                Employee Name
+              </Typography>
             </TableCell>
             <TableCell>
               <Typography color="textSecondary" variant="h6">
-                {emp.salary}
+                Tin Number
               </Typography>
             </TableCell>
-            <TableCell align="right">
-              <Typography variant="h6">{emp.allowance.transportAllowance}</Typography>
-            </TableCell>
-            <TableCell align="right">
-              <Typography variant="h6">{emp.allowance.house}</Typography>
+            <TableCell>
+              <Typography color="textSecondary" variant="h6">
+                Basic Salary
+              </Typography>
             </TableCell>
             <TableCell>
-              <IconButton onClick={() => handleEdit()} aria-label="Edit" color="primary">
-                <Edit />
-              </IconButton>
+              <Typography color="textSecondary" variant="h6">
+                Transport Allowance
+              </Typography>
+            </TableCell>
+            <TableCell>
+              <Typography color="textSecondary" variant="h6">
+                House Allowance
+              </Typography>
             </TableCell>
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHead>
+        <TableBody>
+          {data
+            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            .map((emp,index) => (
+              <TableRow key={emp.id}>
+                <TableCell>
+          <Typography variant="h6">
+            {page * rowsPerPage + index + 1}
+          </Typography>
+        </TableCell>
+                <TableCell>
+                  <Typography
+                    sx={{
+                      fontSize: "15px",
+                      fontWeight: "500"
+                    }}
+                  >
+                    {emp.id}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="h6">
+                    {emp.Employee.User.Person.first_name}{" "}
+                    {emp.Employee.User.Person.middle_name}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="h6">{emp.position_id}</Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography color="textSecondary" variant="h6">
+                    {numeral(emp.salary).format("0,0")}
+                  </Typography>
+                </TableCell>
+                <TableCell >
+                  <Typography variant="h6">
+                    {numeral(emp.allowance.transport).format("0,0")} Liter
+                  </Typography>
+                </TableCell>
+                <TableCell >
+                  <Typography variant="h6">
+                    {numeral(emp.allowance.house).format("0,0")} ETB
+                  </Typography>
+                </TableCell>
+              </TableRow>
+            ))}
+        </TableBody>
+      </Table>
     </TableContainer>
   );
 };
-
 export default ExTable;

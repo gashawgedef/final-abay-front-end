@@ -1,112 +1,88 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   CardContent,
   Box,
   Typography,
   Button,
-  Modal,
   TextField,
-  Grid,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import ExTable from "../dashboards/dashboard1-components/ExTable";
-import AddIcon from '@mui/icons-material/Add';
-import Axios from 'axios'
-import {currentUser} from "../../utils/tokenUtils"
-
+import AddIcon from "@mui/icons-material/Add";
+import { currentUser } from "../../utils/tokenUtils";
+import { branch_employees_salary } from "../../services/employeeapi";
 
 // Function to decode a JWT token (example implementation)
 
 const BasicTable = () => {
-const user = currentUser();
-console.log(user);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [inputValues, setInputValues] = useState({
-    employee_name: "",
-    tin_no: "",
-    basic_salary: "",
-    transport_allowance: "",
-    additional_benefits: "",
-    taxable_income: "",
-    tax_with_hold: "",
-    net_pay: "",
-    branch_name: "",
-  });
+  const user = currentUser();
+  const [openDialog, setOpenDialog] = useState(false);
+  const [overtime, setOvertime] = useState("");
+  const [bonus, setBonus] = useState("");
+  const [employeeData, setEmployeeData] = useState([]);
 
-  const handleModalToggle = () => {
-    setIsModalOpen(!isModalOpen);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const employees = await branch_employees_salary(120, 2, 2023);
+        setEmployeeData(employees);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
   };
 
-  // const handleInputChange = (event) => {
-  //   setInputValues({
-  //     ...inputValues,
-  //     [event.target.name]: event.target.value,
-  //   });
-  // };
-  
-  const handleSave = async (e) => {
-    e.preventDefault();
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
 
-    const { employee_name,  tin_no, basic_salary, transport_allowance,  additional_benefits, taxable_income, tax_with_hold, net_pay,branch_name } = inputValues;
-    const data = { employee_name,  tin_no, basic_salary, transport_allowance,  additional_benefits, taxable_income, tax_with_hold, net_pay,branch_name };
+  const handleSave = () => {
+    // Check if any required fields are empty
+    const hasEmptyFields = employeeData.some(
+      (employee) => employee.benefit === "" || employee.bonus === ""
+    );
 
-    try {
-      await Axios.post('http://127.0.0.1:8000/emplyee_tax/', data);
-      console.log('Data submitted successfully');
-    } catch (error) {
-      console.error('Error submitting data:', error);
+    if (hasEmptyFields) {
+      // Display an error message or handle the empty fields
+      console.log("Error: Required fields are empty");
+      return;
     }
-    setIsModalOpen(false);
+
+    // Perform save logic here
+    // Access employeeData array and save all the benefits and bonuses together
+
+    // Reset the values
+    setOvertime("");
+    setBonus("");
+    setOpenDialog(false);
+
+    // Use the obtained data as per your requirement
+    console.log("Employee Data:", employeeData);
   };
-  
-  // let handleSave = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     let res = await fetch("http://127.0.0.1:8000/emplyee_tax/", {
-  //       method: "POST",
-  //       body: JSON.stringify({
-  //         employee_name:employee_name,
-  //         tin_no: employee_name,
-  //         basic_salary: basic_salary,
-  //         transport_allowance: transport_allowance,
-  //         additional_benefits: additional_benefits,
-  //         taxable_income: taxable_income,
-  //         tax_with_hold: tax_with_hold,
-  //         net_pay: net_pay,
-  //         branch_name: branch_name
-  //       }),
-  //     });
-  //     let resJson = await res.json();
-  //     if (res.status === 200) {
-  //       setEmployeeName("");
-  //       setTinNumber("");
-  //       setBasicSalary("");
-  //       setAdditionalBenefits("");
-  //       setMessage("User created successfully");
-  //     } else {
-  //       setMessage("Some error occured");
-  //     }
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  //   setIsModalOpen(false);
-  // };
 
+  const handleBenefitChange = (index, value) => {
+    const updatedEmployeeData = [...employeeData];
+    updatedEmployeeData[index].benefit = value;
+    setEmployeeData(updatedEmployeeData);
+  };
 
-
-  const handleCancel = () => {
-    // Reset the input values and close the modal
-    setInputValues({
-      employee_name: "",
-      tin_no: "",
-      basic_salary: "",
-      transport_allowance: "",
-      additional_benefits: "",
-      taxable_income: "",
-      tax_with_hold: "",
-      net_pay: "",
-      branch_name: "",
-    });
-    setIsModalOpen(false);
+  const handleBonusChange = (index, value) => {
+    const updatedEmployeeData = [...employeeData];
+    updatedEmployeeData[index].bonus = value;
+    setEmployeeData(updatedEmployeeData);
   };
 
   return (
@@ -119,131 +95,84 @@ console.log(user);
             justifyContent: "space-between",
           }}
         >
-          <Typography variant="h3">Abay Bank Employee Tax Record</Typography>
-          <Button variant="contained" onClick={handleModalToggle} color="success">
-          <AddIcon />
+          <Typography variant="h3">{user.branch} Employee List</Typography>
+          <Button color="success" variant="outlined" onClick={handleOpenDialog}>
+            <AddIcon />
+            Add Benefit
           </Button>
         </Box>
         <Box sx={{ overflow: "auto", mt: 3 }}>
           <ExTable />
         </Box>
       </CardContent>
-      <Modal open={isModalOpen} onClose={handleModalToggle}>
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 600,
-            maxHeight: "90vh",
-            overflowY: "auto",
-            bgcolor: "background.paper",
-            border: "2px solid #000",
-            boxShadow: 24,
-            p: 4,
-          }}
-        >
-          <Typography variant="h5" component="h2">
-            Register Employee Tax
-          </Typography>
-          <form onSubmit={handleSave}>
-          <Grid container spacing={2}>
-            <Grid item xs={6}>
-              <TextField
-                label="Employee Name"
-                name="employee_name"
-                value={inputValues.employee_name}
-                onChange={(e) => setInputValues({ ...inputValues, employee_name: e.target.value })}
-                fullWidth
-                margin="normal"
-              />
-              <TextField
-                label="TIN No"
-                name="tin_no"
-                value={inputValues.tin_no}
-                onChange={(e) => setInputValues({ ...inputValues, tin_no: e.target.value })}
-                type="number"
-                fullWidth
-                margin="normal"
-              />
-              <TextField
-                label="Basic Salary"
-                name="basic_salary"
-                value={inputValues.basic_salary}
-                onChange={(e) => setInputValues({ ...inputValues, basic_salary: e.target.value })}
-                type="number"
-                fullWidth
-                margin="normal"
-              />
-              <TextField
-                label="Transport Allowance"
-                name="transport_allowance"
-                value={inputValues.transport_allowance}
-                onChange={(e) => setInputValues({ ...inputValues, transport_allowance: e.target.value })}
-                type="number"
-                fullWidth
-                margin="normal"
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                label="Additional Benefits"
-                name="additional_benefits"
-                value={inputValues.additional_benefits}
-                onChange={(e) => setInputValues({ ...inputValues, additional_benefits: e.target.value })}
-                fullWidth
-                margin="normal"
-              />
-              <TextField
-                label="Taxable Income"
-                name="taxable_income"
-                value={inputValues.taxable_income}
-                onChange={(e) => setInputValues({ ...inputValues, taxable_income: e.target.value })}
-                type="number"
-                fullWidth
-                margin="normal"
-              />
-              <TextField
-                label="Tax Withhold"
-                name="tax_with_hold"
-                value={inputValues.tax_with_hold}
-                onChange={(e) => setInputValues({ ...inputValues, tax_with_hold: e.target.value })}
-                type="number"
-                fullWidth
-                margin="normal"
-              />
-              <TextField
-                label="Net Pay"
-                name="net_pay"
-                value={inputValues.net_pay}
-                onChange={(e) => setInputValues({ ...inputValues, net_pay: e.target.value })}
-                type="number"
-                fullWidth
-                margin="normal"
-              />
-            
-            </Grid>
-            <TextField
-                label="Branch Name"
-                name="branch_name"
-                value={inputValues.branch_name}
-                onChange={(e) => setInputValues({ ...inputValues, branch_name: e.target.value })}
-                fullWidth
-                margin="normal"
-              />
-          </Grid>
-          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
-            <Button onClick={handleCancel} variant="outlined" sx={{ mr: 2 }}>
-              Cancel
-            </Button>
-            <Button type="submit" variant="contained" color="success">
-              Save
-            </Button>
-          </Box>
-          </form>
-        </Box>
-      </Modal>
+      <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth>
+        <DialogTitle>Add Taxable Benefits</DialogTitle>
+
+        <DialogContent>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>#</TableCell>
+                <TableCell>Name</TableCell>
+                <TableCell>Taxable Benefit</TableCell>
+                <TableCell>None Taxable Benefit</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {employeeData.map((employee, index) => (
+                <TableRow key={employee.id}>
+                  <TableCell>{index + 1}</TableCell>
+                  <TableCell>
+                    {employee.Employee.User.Person.first_name}{" "}
+                    {employee.Employee.User.Person.last_name}
+                  </TableCell>
+                  <TableCell>
+                    <TextField 
+                    type="number"
+                    size="small"
+                     color="secondary"
+                      value={employee.benefit}
+                      onChange={(e) =>
+                        handleBenefitChange(index, e.target.value)
+                      }
+                      error={employee.benefit === ""}
+                      helperText={employee.benefit === "" ? "Required" : ""}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <TextField
+                    type="number"
+                      size="small"
+                      color="secondary"
+                      value={employee.bonus}
+                      onChange={(e) => handleBonusChange(index, e.target.value)}
+                      error={employee.bonus === ""}
+                      helperText={employee.bonus === "" ? "Required" : ""}
+                    />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} variant="contained" color="primary">
+            Cancel
+          </Button>
+          <Button
+            onClick={handleSave}
+            variant="contained"
+            color="success"
+            disabled={
+              !employeeData.every(
+                (employee) => employee.benefit !== "" && employee.bonus !== ""
+              )
+            }
+            >
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
