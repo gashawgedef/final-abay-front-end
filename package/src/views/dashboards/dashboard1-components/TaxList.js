@@ -11,10 +11,10 @@ import {
   TablePagination,
   Paper
 } from "@mui/material";
-import { branch_employees_salary } from "../../../services/employeeapi";
+import { useLocation } from "react-router-dom";
 import { branch_employees_tax } from "../../../services/taxapi";
-
 import {currentUser} from "../../../utils/tokenUtils"
+ 
   const TaxList = () => {
   const user = currentUser();
   // const branch=user.branch_id;
@@ -22,14 +22,21 @@ import {currentUser} from "../../../utils/tokenUtils"
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [data, setData] = useState([]);
+  const location = useLocation();
+  const stateData = location.state;
   const currentDate = new Date();
-  const currentMonth = currentDate.getMonth() + 1; 
-  const currentYear = currentDate.getFullYear();
-  const month=`${currentMonth}/${currentYear}`;
+ const currentmonth = currentDate.getMonth() + 1; 
+ const currentYear = currentDate.getFullYear();
+ let currentMonth=`${currentmonth}/${currentYear}`;
+  if (stateData !== null) {
+    const year = stateData.year;
+    const month = stateData.month;
+    currentMonth=`${month}/${year}`;
+  } 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await branch_employees_tax(branch,month);
+        const data = await branch_employees_tax(branch,currentMonth);
         setData(data);
       } catch (error) {
         console.log(error);

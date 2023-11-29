@@ -16,13 +16,15 @@ import {
 } from "@mui/material";
 import { currentUser } from "../../../utils/tokenUtils";
 import { branch_employees_salary } from "../../../services/employeeapi";
+import { bulkTaxRecord } from "../../../services/taxapi";
+
 const AddBenefit = () => {
   const user = currentUser();
   const navigate = useNavigate();
   const location = useLocation();
-  const data = location.state;
-  const year = data.year;
-  const month = data.month;
+  const stateData = location.state;
+  const year = stateData.year;
+  const month = stateData.month;
   const currentMonth=`${month}/${year}`;
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const openConfirmationDialog = () => {
@@ -61,26 +63,39 @@ const AddBenefit = () => {
   };
 
   const handleConfirmSave = () => {
-   // console.log("Employee Data:", employeeData);
-    let emp={};
-    employeeData.forEach((employee, index) => {
-      emp.fullname= employee.Employee.User.Person.first_name +" "+
-      employee.Employee.User.Person.middle_name +" "+
-      employee.Employee.User.Person.last_name;
-      emp.benefit=employee.benefit;
-      emp.branch=employee.branch_id;
-      emp.grade_id=employee.grade_id;
-      emp.step_id=employee.step_id;
-      emp.house=employee.allowance.house      ;
-      emp.transport=employee.allowance.transportAllowance;
-      emp.tin=employee.position_id;
-      emp.month=currentMonth;
-      emp.salary=employee.salary;
-      console.log(emp);
+   const taxRecords = []; 
+   employeeData.forEach((employee, index) => {
+     const emp = {
+       fullname:
+         employee.Employee.User.Person.first_name +
+         " " +
+         employee.Employee.User.Person.middle_name +
+         " " +
+         employee.Employee.User.Person.last_name,
+       benefit: employee.benefit,
+       branch: employee.branch_id,
+       grade_id: employee.grade_id,
+       step_id: employee.step_id,
+       house: employee.allowance.house,
+       transport: employee.allowance.transportAllowance,
+       tin: employee.position_id,
+       month: currentMonth,
+       salary: employee.salary
+     };
+     taxRecords.push(emp);
+   });
+    bulkTaxRecord(taxRecords)
+    .then(registerData => {
+      closeConfirmationDialog();
+      alert("You have sucussfully registered");
+      navigate("/dashboards/tax-list", {state: stateData});
+    })
+    .catch(error => {
+      alert("You have an error");
+      console.error(error);
     });
-    closeConfirmationDialog();
   };
-  
+
     const handleBenefitChange = (index, value) => {
     const updatedEmployeeData = [...employeeData];
     updatedEmployeeData[index].benefit= value;
