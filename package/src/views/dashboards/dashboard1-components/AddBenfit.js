@@ -23,6 +23,7 @@ const AddBenefit = () => {
   const data = location.state;
   const year = data.year;
   const month = data.month;
+  const currentMonth=`${month}/${year}`;
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const openConfirmationDialog = () => {
     setIsConfirmationOpen(true);
@@ -60,12 +61,27 @@ const AddBenefit = () => {
   };
 
   const handleConfirmSave = () => {
-    console.log("Employee Data:", employeeData);
+   // console.log("Employee Data:", employeeData);
+    let emp={};
+    employeeData.forEach((employee, index) => {
+      emp.fullname= employee.Employee.User.Person.first_name +" "+
+      employee.Employee.User.Person.middle_name +" "+
+      employee.Employee.User.Person.last_name;
+      emp.benefit=employee.benefit;
+      emp.branch=employee.branch_id;
+      emp.grade_id=employee.grade_id;
+      emp.step_id=employee.step_id;
+      emp.house=employee.allowance.house      ;
+      emp.transport=employee.allowance.transportAllowance;
+      emp.tin=employee.position_id;
+      emp.month=currentMonth;
+      emp.salary=employee.salary;
+      console.log(emp);
+    });
     closeConfirmationDialog();
   };
   
-  const handleBenefitChange = (index, value) => {
-
+    const handleBenefitChange = (index, value) => {
     const updatedEmployeeData = [...employeeData];
     updatedEmployeeData[index].benefit= value;
     setEmployeeData(updatedEmployeeData);
