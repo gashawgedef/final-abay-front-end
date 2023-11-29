@@ -33,16 +33,13 @@ const Sidebar = (props) => {
   };
   const user = currentUser();
   let Menuitems = BRMenuitems;
-   user.branch_type="BR";
   if (user.branch_type === "HQ") {
     Menuitems = HQMenuitems;
   }
   else if(user.branch_type==="BR"){
     Menuitems=BRMenuitems;
   }
-  else{
-    Menuitems=null
-  }
+  
 
   const SidebarContent = (
     <Box sx={{ p: 3, height: "calc(100vh - 40px)", background: "#CDCDCD" }}>
