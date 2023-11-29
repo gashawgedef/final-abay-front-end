@@ -1,5 +1,7 @@
 import { lazy } from "react";
 import { Navigate,Redirect } from "react-router-dom";
+import PriceTable from "../views/tables/PriceTable.js";
+ import AddBenefit from "../views/dashboards/dashboard1-components/AddBenfit.js"
 
 /****Layouts*****/
 const FullLayout = lazy(() => import("../layouts/FullLayout/FullLayout.js"));
@@ -32,6 +34,8 @@ const ThemeRoutes = [
     children: [
       { path: "dashboards/dashboard1", exact: true, element: <Dashboard1 /> },
       { path: "tables/basic-table", element: <BasicTable /> },
+      { path: "tables/price-table", element: <PriceTable /> },
+      { path: "tables/add-benefit", element: <AddBenefit /> },
       { path: "/form-layouts/form-layouts", element: <FormLayouts /> },
       { path: "/form-elements/autocomplete", element: <ExAutoComplete /> },
       { path: "/form-elements/button", element: <ExButton /> },

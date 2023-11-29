@@ -51,10 +51,15 @@ const Menuitems = [
   // },
   
   {
-    title: " Tax Record",
+    title: " Employee List",
     icon: AutoAwesomeMosaicOutlinedIcon,
     href: "/tables/basic-table",
   },
+  {
+    title: " Monthly Gas Price",
+    icon: AutoAwesomeMosaicOutlinedIcon,
+    href: "/tables/price-table",
+  }
 ];
 
 export default Menuitems;
