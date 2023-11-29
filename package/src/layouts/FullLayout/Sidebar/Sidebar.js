@@ -1,8 +1,7 @@
 import React from "react";
 import { useLocation } from "react-router";
 import { Link, NavLink } from "react-router-dom";
-import { blue } from '@mui/material/colors';
-
+import { blue } from "@mui/material/colors";
 
 import {
   Box,
@@ -15,11 +14,11 @@ import {
 } from "@mui/material";
 import { SidebarWidth } from "../../../assets/global/Theme-variable";
 import LogoIcon from "../Logo/LogoIcon";
-import Menuitems from "./data";
+import { HQMenuitems, BRMenuitems } from "./data";
+import { currentUser } from "../../../utils/tokenUtils";
 // import Buynow from "./Buynow";
 
 const Sidebar = (props) => {
- 
   const [open, setOpen] = React.useState(true);
   const { pathname } = useLocation();
   const pathDirect = pathname;
@@ -32,24 +31,27 @@ const Sidebar = (props) => {
       setOpen(index);
     }
   };
+  const user = currentUser();
+  let Menuitems = BRMenuitems;
+  if (user.branch_type === "HQ") {
+    Menuitems = HQMenuitems;
+  }
+  else if(user.branch_type==="BR"){
+    Menuitems=BRMenuitems;
+  }
+  
 
   const SidebarContent = (
-    <Box sx={{ p: 3, height: "calc(100vh - 40px)" ,background:"#CDCDCD"}}>
+    <Box sx={{ p: 3, height: "calc(100vh - 40px)", background: "#CDCDCD" }}>
       <Link to="/">
         <Box sx={{ display: "flex", alignItems: "Center" }}>
           <LogoIcon />
         </Box>
       </Link>
-
       <Box>
-        <List
-          sx={{
-            mt: 4,
-          }}
-        >
+        <List sx={{ mt: 4 }}>
           {Menuitems.map((item, index) => {
             //{/********SubHeader**********/}
-
             return (
               <List component="li" disablePadding key={item.title}>
                 <ListItem
@@ -81,9 +83,11 @@ const Sidebar = (props) => {
           })}
         </List>
       </Box>
+
       {/* <Buynow /> */}
     </Box>
   );
+
   if (lgUp) {
     return (
       <Drawer
@@ -100,6 +104,7 @@ const Sidebar = (props) => {
       </Drawer>
     );
   }
+
   return (
     <Drawer
       anchor="left"
