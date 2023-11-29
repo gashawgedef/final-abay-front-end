@@ -60,7 +60,13 @@ export const HQMenuitems = [
     title: " Monthly Gas Price",
     icon: AutoAwesomeMosaicOutlinedIcon,
     href: "/tables/price-table",
-  }
+  },
+  {
+    title: "Tax page",
+    icon: DashboardOutlinedIcon,
+    href: "/dashboards/tax-list",
+ },
+  
 ];
 
 export const BRMenuitems = [

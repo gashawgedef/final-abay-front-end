@@ -15,15 +15,14 @@ import {
 import ExTable from "../dashboards/dashboard1-components/ExTable";
 import AddIcon from "@mui/icons-material/Add";
 import { currentUser } from "../../utils/tokenUtils";
-import { branch_employees_salary } from "../../services/employeeapi";
 
 // Function to decode a JWT token (example implementation)
 const BasicTable = () => {
   const user = currentUser();
   const navigate = useNavigate();
   const [openDialog, setOpenDialog] = useState(false);
-  const [selectedYear, setSelectedYear] = useState("");
-  const [selectedMonth, setSelectedMonth] = useState("");
+  const [selectedYear, setSelectedYear] = useState(2023);
+  const [selectedMonth, setSelectedMonth] = useState(11);
 
   const handleOpenDialog = () => {
     setOpenDialog(true);
@@ -52,7 +51,7 @@ const BasicTable = () => {
 
   const generateYearOptions = () => {
     const years = [];
-    for (let year = 2010; year <= 2050; year++) {
+    for (let year = 2010; year <= 2035; year++) {
       years.push(
         <MenuItem key={year} value={year}>
           {year}
@@ -61,6 +60,8 @@ const BasicTable = () => {
     }
     return years;
   };
+
+  const isButtonDisabled = selectedYear === "" || selectedMonth === "";
 
   return (
     <Box>
@@ -82,42 +83,55 @@ const BasicTable = () => {
           <ExTable />
         </Box>
       </CardContent>
-      <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>Choose Year and Month</DialogTitle>
+      <Dialog open={openDialog} onClose={handleCloseDialog}  >
+        <DialogTitle sx={{ textAlign: "center" }} >Choose Year and Month</DialogTitle>
 
-        <DialogContent>
-          <Select
-            value={selectedYear}
-            onChange={handleYearChange}
-            displayEmpty
-          >
-            <MenuItem value="">Select Year</MenuItem>
-            {generateYearOptions()}
-          </Select>
+        <DialogContent  sx={{ textAlign: "center" }}>
+          <Box sx={{ marginBottom: "1rem" }}>
+            <Select
+              value={selectedYear}
+              onChange={handleYearChange}
+              displayEmpty
+              sx={{ width: "400px" }}
+            >
+              <MenuItem value="">Select Year</MenuItem>
+              {generateYearOptions()}
+            </Select>
+          </Box>
 
           <Select
             value={selectedMonth}
             onChange={handleMonthChange}
             displayEmpty
+            sx={{ width: "400px" }}
           >
             <MenuItem value="">Select Month</MenuItem>
             <MenuItem value={1}>January</MenuItem>
             <MenuItem value={2}>February</MenuItem>
             <MenuItem value={3}>March</MenuItem>
-            {/* Add more months as needed */}
+            <MenuItem value={4}>April</MenuItem>
+            <MenuItem value={5}>May</MenuItem>
+            <MenuItem value={6}>June</MenuItem>
+            <MenuItem value={7}>July</MenuItem>
+            <MenuItem value={8}>August</MenuItem>
+            <MenuItem value={9}>September</MenuItem>
+            <MenuItem value={10}>October</MenuItem>
+            <MenuItem value={11}>November</MenuItem>
+            <MenuItem value={12}>December</MenuItem>
           </Select>
         </DialogContent>
 
-        <DialogActions>
-          <Button onClick={handleCloseDialog} color="error">
-            Cancel
-          </Button>
-          <Button onClick={handleAddBenefit} color="success">
-            Open
-          </Button>
-        </DialogActions>
+        <DialogActions sx={{ textAlign: "center" }}>
+  <Button onClick={handleCloseDialog} variant="contained" color="error">
+    Cancel
+  </Button>
+  <Button onClick={handleAddBenefit} variant="contained" color="success" disabled={isButtonDisabled}>
+    Open
+  </Button>
+</DialogActions>
       </Dialog>
     </Box>
   );
 };
+
 export default BasicTable;

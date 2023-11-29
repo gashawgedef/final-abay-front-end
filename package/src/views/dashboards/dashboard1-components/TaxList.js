@@ -12,8 +12,10 @@ import {
   Paper
 } from "@mui/material";
 import { branch_employees_salary } from "../../../services/employeeapi";
+import { branch_employees_tax } from "../../../services/taxapi";
+
 import {currentUser} from "../../../utils/tokenUtils"
-  const ExTable = () => {
+  const TaxList = () => {
   const user = currentUser();
   // const branch=user.branch_id;
   const branch=120;
@@ -23,11 +25,12 @@ import {currentUser} from "../../../utils/tokenUtils"
   const currentDate = new Date();
   const currentMonth = currentDate.getMonth() + 1; 
   const currentYear = currentDate.getFullYear();
+  const month=`${currentMonth}/${currentYear}`;
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const employees = await branch_employees_salary(branch,currentMonth, currentYear);
-        setData(employees);
+        const data = await branch_employees_tax(branch,month);
+        setData(data);
       } catch (error) {
         console.log(error);
       }
@@ -70,11 +73,7 @@ import {currentUser} from "../../../utils/tokenUtils"
       </Typography>
     </TableCell>
 
-            <TableCell>
-              <Typography color="textSecondary" variant="h6">
-                Emp_Id
-              </Typography>
-            </TableCell>
+            
             <TableCell>
               <Typography align="left" color="textSecondary" variant="h6">
                 Employee Name
@@ -92,12 +91,28 @@ import {currentUser} from "../../../utils/tokenUtils"
             </TableCell>
             <TableCell>
               <Typography color="textSecondary" variant="h6">
-                Transport Allowance
+                Transport 
               </Typography>
             </TableCell>
             <TableCell>
               <Typography color="textSecondary" variant="h6">
-                House Allowance
+                House 
+              </Typography>
+            </TableCell>
+            <TableCell>
+              <Typography color="textSecondary" variant="h6">
+                Benefit
+              </Typography>
+            </TableCell>
+            <TableCell>
+              <Typography color="textSecondary" variant="h6">
+                Branch
+              </Typography>
+            </TableCell>
+
+            <TableCell>
+              <Typography color="textSecondary" variant="h6">
+                month
               </Typography>
             </TableCell>
           </TableRow>
@@ -112,24 +127,15 @@ import {currentUser} from "../../../utils/tokenUtils"
             {page * rowsPerPage + index + 1}
           </Typography>
         </TableCell>
-                <TableCell>
-                  <Typography
-                    sx={{
-                      fontSize: "15px",
-                      fontWeight: "500"
-                    }}
-                  >
-                    {emp.id}
-                  </Typography>
-                </TableCell>
+               
                 <TableCell>
                   <Typography variant="h6">
-                    {emp.Employee.User.Person.first_name}{" "}
-                    {emp.Employee.User.Person.middle_name}
+                    {emp.fullName}
+                    
                   </Typography>
                 </TableCell>
                 <TableCell>
-                  <Typography variant="h6">{emp.position_id}</Typography>
+                  <Typography variant="h6">{emp.tin}</Typography>
                 </TableCell>
                 <TableCell>
                   <Typography color="textSecondary" variant="h6">
@@ -138,12 +144,28 @@ import {currentUser} from "../../../utils/tokenUtils"
                 </TableCell>
                 <TableCell >
                   <Typography variant="h6">
-                    {numeral(emp.allowance.transport).format("0,0")} Liter
+                    {numeral(emp.transport).format("0,0")} 
                   </Typography>
                 </TableCell>
                 <TableCell >
                   <Typography variant="h6">
-                    {numeral(emp.allowance.house).format("0,0")} ETB
+                    {numeral(emp.house).format("0,0")} 
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography>
+                  {numeral(emp.benefit).format("0,0")} 
+                  </Typography>
+                </TableCell>
+
+                <TableCell>
+                  <Typography>
+                  {emp.branch}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography>
+                  {emp.month} 
                   </Typography>
                 </TableCell>
               </TableRow>
@@ -153,4 +175,4 @@ import {currentUser} from "../../../utils/tokenUtils"
     </TableContainer>
   );
 };
-export default ExTable;
+export default TaxList;
