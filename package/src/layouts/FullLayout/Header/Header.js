@@ -27,14 +27,25 @@ import {
 } from "@mui/material";
 
 import userimg from "../../../assets/images/users/user.jpg";
-
+import { useNavigate } from "react-router-dom";
+import { currentUser } from "../../../utils/tokenUtils";
+const user = currentUser();
+console.log(user)
+let fullName=`${user.first_name} ${user.middle_name}`
 const Header = (props) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+  const navigate = useNavigate();
+  
 
+  const handleLogout = () => {
+    // Redirect to the login page or any other desired page
+    localStorage.clear()
+    navigate("/login", { replace: true }); // Replace "/login" with the appropriate route
+  };
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -251,7 +262,7 @@ const Header = (props) => {
                 ml: 2,
               }}
             >
-              My account
+             {fullName}
             </Box>
           </MenuItem>
           <Divider />
@@ -267,7 +278,8 @@ const Header = (props) => {
             </ListItemIcon>
             Settings
           </MenuItem>
-          <MenuItem onClick={handleClose4}>
+          
+          <MenuItem onClick={handleLogout}>
             <ListItemIcon>
               <LogoutOutlinedIcon fontSize="small" />
             </ListItemIcon>
