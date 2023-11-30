@@ -12,7 +12,7 @@ const Dashboard1 = lazy(() => import("../views/dashboards/Dashboard1.js"));
 const Login = lazy(() => import("../views/dashboards/SignIn.js"));
 /*****Tables******/
 const BasicTable = lazy(() => import("../views/tables/BasicTable.js"));
-
+const TaxList = lazy(() => import("../views/dashboards/dashboard1-components/TaxList.js"));
 // form elements
 const ExAutoComplete = lazy(() =>
   import("../views/FormElements/ExAutoComplete.js")
@@ -33,6 +33,7 @@ const ThemeRoutes = [
     element: <FullLayout />,
     children: [
       { path: "dashboards/dashboard1", exact: true, element: <Dashboard1 /> },
+      { path: "dashboards/tax-list", element: <TaxList /> },
       { path: "tables/basic-table", element: <BasicTable /> },
       { path: "tables/price-table", element: <PriceTable /> },
       { path: "tables/add-benefit", element: <AddBenefit /> },

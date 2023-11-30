@@ -10,21 +10,20 @@ import {
   DialogContent,
   DialogActions,
   Select,
-  MenuItem
+  MenuItem,
 } from "@mui/material";
 import ExTable from "../dashboards/dashboard1-components/ExTable";
 import AddIcon from "@mui/icons-material/Add";
 import { currentUser } from "../../utils/tokenUtils";
-import { branch_employees_salary } from "../../services/employeeapi";
-
-// Function to decode a JWT token (example implementation)
+import { is_branch_employees_tax_exist } from "../../services/taxapi";
 const BasicTable = () => {
   const user = currentUser();
   const navigate = useNavigate();
   const [openDialog, setOpenDialog] = useState(false);
-  const [selectedYear, setSelectedYear] = useState("");
-  const [selectedMonth, setSelectedMonth] = useState("");
-
+  const [selectedYear, setSelectedYear] = useState(2023);
+  const [selectedMonth, setSelectedMonth] = useState(11);
+  const branch = user.branch;
+  //const branch=120;
   const handleOpenDialog = () => {
     setOpenDialog(true);
   };
@@ -33,13 +32,18 @@ const BasicTable = () => {
     setOpenDialog(false);
   };
 
-  const handleAddBenefit = () => {
+  const handleAddBenefit = async () => {
     const data = {
       year: selectedYear,
       month: selectedMonth,
     };
-
-    navigate("/tables/add-benefit", { state: data });
+    const month = `${selectedMonth}/${selectedYear}`;
+    const record = await is_branch_employees_tax_exist(branch, month);
+    if (record == 0) {
+      navigate("/tables/add-benefit", { state: data });
+    } else {
+      alert("You registered this month data befor please check your selection");
+    }
   };
 
   const handleYearChange = (event) => {
@@ -52,7 +56,7 @@ const BasicTable = () => {
 
   const generateYearOptions = () => {
     const years = [];
-    for (let year = 2010; year <= 2050; year++) {
+    for (let year = 2010; year <= 2035; year++) {
       years.push(
         <MenuItem key={year} value={year}>
           {year}
@@ -61,6 +65,8 @@ const BasicTable = () => {
     }
     return years;
   };
+
+  const isButtonDisabled = selectedYear === "" || selectedMonth === "";
 
   return (
     <Box>
@@ -83,35 +89,55 @@ const BasicTable = () => {
         </Box>
       </CardContent>
       <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>Choose Year and Month</DialogTitle>
+        <DialogTitle sx={{ textAlign: "center" }}>
+          Choose Year and Month
+        </DialogTitle>
 
-        <DialogContent>
-          <Select
-            value={selectedYear}
-            onChange={handleYearChange}
-            displayEmpty
-          >
-            <MenuItem value="">Select Year</MenuItem>
-            {generateYearOptions()}
-          </Select>
+        <DialogContent sx={{ textAlign: "center" }}>
+          <Box sx={{ marginBottom: "1rem" }}>
+            <Select
+              value={selectedYear}
+              onChange={handleYearChange}
+              displayEmpty
+              sx={{ width: "400px" }}
+            >
+              <MenuItem value="">Select Year</MenuItem>
+              {generateYearOptions()}
+            </Select>
+          </Box>
+
           <Select
             value={selectedMonth}
             onChange={handleMonthChange}
             displayEmpty
+            sx={{ width: "400px" }}
           >
             <MenuItem value="">Select Month</MenuItem>
             <MenuItem value={1}>January</MenuItem>
             <MenuItem value={2}>February</MenuItem>
             <MenuItem value={3}>March</MenuItem>
-            {/* Add more months as needed */}
+            <MenuItem value={4}>April</MenuItem>
+            <MenuItem value={5}>May</MenuItem>
+            <MenuItem value={6}>June</MenuItem>
+            <MenuItem value={7}>July</MenuItem>
+            <MenuItem value={8}>August</MenuItem>
+            <MenuItem value={9}>September</MenuItem>
+            <MenuItem value={10}>October</MenuItem>
+            <MenuItem value={11}>November</MenuItem>
+            <MenuItem value={12}>December</MenuItem>
           </Select>
         </DialogContent>
 
-        <DialogActions>
-          <Button onClick={handleCloseDialog} color="error">
+        <DialogActions sx={{ textAlign: "center" }}>
+          <Button onClick={handleCloseDialog} variant="contained" color="error">
             Cancel
           </Button>
-          <Button onClick={handleAddBenefit} color="success">
+          <Button
+            onClick={handleAddBenefit}
+            variant="contained"
+            color="success"
+            disabled={isButtonDisabled}
+          >
             Open
           </Button>
         </DialogActions>
@@ -119,4 +145,5 @@ const BasicTable = () => {
     </Box>
   );
 };
+
 export default BasicTable;

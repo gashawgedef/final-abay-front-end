@@ -16,7 +16,7 @@ import {currentUser} from "../../../utils/tokenUtils"
   const ExTable = () => {
   const user = currentUser();
   // const branch=user.branch_id;
-  const branch=67;
+  const branch=120;
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [data, setData] = useState([]);
@@ -46,15 +46,6 @@ import {currentUser} from "../../../utils/tokenUtils"
   };
   return (
     <TableContainer component={Paper}>
-      <TablePagination
-        rowsPerPageOptions={[10, 25, 50]}
-        component="div"
-        count={data.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
       <Table
         aria-label="simple table"
         sx={{
@@ -150,6 +141,15 @@ import {currentUser} from "../../../utils/tokenUtils"
             ))}
         </TableBody>
       </Table>
+      <TablePagination
+        rowsPerPageOptions={[10, 25, 50]}
+        component="div"
+        count={data.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
     </TableContainer>
   );
 };
