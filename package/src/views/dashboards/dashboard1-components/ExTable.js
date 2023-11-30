@@ -46,15 +46,6 @@ import {currentUser} from "../../../utils/tokenUtils"
   };
   return (
     <TableContainer component={Paper}>
-      <TablePagination
-        rowsPerPageOptions={[10, 25, 50]}
-        component="div"
-        count={data.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
       <Table
         aria-label="simple table"
         sx={{
@@ -150,6 +141,15 @@ import {currentUser} from "../../../utils/tokenUtils"
             ))}
         </TableBody>
       </Table>
+      <TablePagination
+        rowsPerPageOptions={[10, 25, 50]}
+        component="div"
+        count={data.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
     </TableContainer>
   );
 };

@@ -56,16 +56,17 @@ export const HQMenuitems = [
     icon: AutoAwesomeMosaicOutlinedIcon,
     href: "/tables/basic-table",
   },
-  {
-    title: " Monthly Gas Price",
-    icon: AutoAwesomeMosaicOutlinedIcon,
-    href: "/tables/price-table",
-  },
+ 
   {
     title: "Tax page",
     icon: DashboardOutlinedIcon,
     href: "/dashboards/tax-list",
  },
+ {
+  title: " Monthly Gas Price",
+  icon: AutoAwesomeMosaicOutlinedIcon,
+  href: "/tables/price-table",
+},
   
 ];
 

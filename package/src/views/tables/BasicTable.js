@@ -14,16 +14,16 @@ import {
 } from "@mui/material";
 import ExTable from "../dashboards/dashboard1-components/ExTable";
 import AddIcon from "@mui/icons-material/Add";
-import { currentUser } from "../../utils/tokenUtils";
-
-// Function to decode a JWT token (example implementation)
+import {currentUser} from "../../utils/tokenUtils";
+import { is_branch_employees_tax_exist } from "../../services/taxapi";
 const BasicTable = () => {
   const user = currentUser();
   const navigate = useNavigate();
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedYear, setSelectedYear] = useState(2023);
   const [selectedMonth, setSelectedMonth] = useState(11);
-
+  const branch=user.branch;
+  //const branch=120;
   const handleOpenDialog = () => {
     setOpenDialog(true);
   };
@@ -32,13 +32,19 @@ const BasicTable = () => {
     setOpenDialog(false);
   };
 
-  const handleAddBenefit = () => {
+  const handleAddBenefit = async () => {
     const data = {
       year: selectedYear,
       month: selectedMonth,
     };
-
-    navigate("/tables/add-benefit", { state: data });
+    const month=`${selectedMonth}/${selectedYear}`;
+    const record = await is_branch_employees_tax_exist(branch,month);
+     if(record==0){
+     navigate("/tables/add-benefit", { state: data });
+     }
+     else{
+      alert("You registered this month data befor please check your selection");
+     }
   };
 
   const handleYearChange = (event) => {
