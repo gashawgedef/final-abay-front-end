@@ -4,14 +4,21 @@ import App from "./App";
 import { BrowserRouter, HashRouter } from "react-router-dom";
 import reportWebVitals from "./reportWebVitals";
 import Spinner from "./views/Spinner/Spinner";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
+const queryClient = new QueryClient();
 root.render(
   <React.StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <ReactQueryDevtools initialIsOpen={false} />
       <BrowserRouter>
-        <App />
+        <Suspense fallback={<div>loading</div>}>
+          <App />
+        </Suspense>
       </BrowserRouter>
-
+    </QueryClientProvider>
   </React.StrictMode>
 );
 
