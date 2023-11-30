@@ -6,12 +6,10 @@ import {
   FormGroup,
   FormControlLabel,
 } from "@mui/material";
-
 import BaseCard from "../../components/BaseCard/BaseCard";
 
 const ExSwitch = () => {
   // 2
-
   return (
     <Box>
       <Grid container spacing={0}>
@@ -63,7 +61,6 @@ const ExSwitch = () => {
             </Box>
           </BaseCard>
         </Grid>
-
         {/* ------------------------- row 1 ------------------------- */}
         <Grid
           item

@@ -94,7 +94,6 @@ const BasicTable = () => {
             <MenuItem value="">Select Year</MenuItem>
             {generateYearOptions()}
           </Select>
-
           <Select
             value={selectedMonth}
             onChange={handleMonthChange}
