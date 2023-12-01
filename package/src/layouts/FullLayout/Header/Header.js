@@ -90,7 +90,7 @@ const Header = (props) => {
         </IconButton>
       
         <Box flexGrow={1} />
-        <Typography variant="h1" style={{ textAlign: "center", fontWeight: "bold", color: "white" ,fontSize: "2rem"}}>
+        <Typography variant="h1" style={{ textAlign: "center", fontWeight: "bold", color: "white" ,fontSize: "1.5rem"}}>
           Abay Bank Employee Tax Record System
         </Typography>
         {/**  */}
