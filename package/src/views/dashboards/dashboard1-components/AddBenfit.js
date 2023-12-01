@@ -25,6 +25,8 @@ const AddBenefit = () => {
   const stateData = location.state;
   const year = stateData.year;
   const month = stateData.month;
+  //const branch=user.branch;
+  const branch=120;
   const currentMonth=`${month}/${year}`;
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const openConfirmationDialog = () => {
@@ -38,7 +40,7 @@ const AddBenefit = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const employees = await branch_employees_salary(120, month, year);
+        const employees = await branch_employees_salary(branch, month, year);
         const initializedEmployees = employees.map((employee) => ({
           ...employee,
           benefit: 0,
@@ -66,7 +68,7 @@ const AddBenefit = () => {
    const taxRecords = []; 
    employeeData.forEach((employee, index) => {
      const emp = {
-       fullname:
+       fullName:
          employee.Employee.User.Person.first_name +
          " " +
          employee.Employee.User.Person.middle_name +
