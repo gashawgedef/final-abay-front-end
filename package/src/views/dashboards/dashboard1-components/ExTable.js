@@ -15,8 +15,8 @@ import { branch_employees_salary } from "../../../services/employeeapi";
 import {currentUser} from "../../../utils/tokenUtils"
   const ExTable = () => {
   const user = currentUser();
-  // const branch=user.branch_id;
-  const branch=120;
+  const branch=user.branch_id;
+  //const branch=120;
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [data, setData] = useState([]);

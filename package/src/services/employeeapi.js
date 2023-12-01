@@ -30,7 +30,6 @@ export const branch_employees_salary = async(branch,month,year) => {
     const data = await response.json();
     return data;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };

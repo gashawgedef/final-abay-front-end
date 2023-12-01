@@ -15,42 +15,6 @@ export const HQMenuitems = [
     href: "/dashboards/dashboard1",
  },
  
-  // {
-  //   title: "Autocomplete",
-  //   icon: AddToPhotosOutlinedIcon,
-  //   href: "/form-elements/autocomplete",
-  // },
-  // {
-  //   title: "Buttons",
-  //   icon: AspectRatioOutlinedIcon,
-  //   href: "/form-elements/button",
-  // },
-  // {
-  //   title: "Checkbox",
-  //   icon: AssignmentTurnedInOutlinedIcon,
-  //   href: "/form-elements/checkbox",
-  // },
-  // {
-  //   title: "Radio",
-  //   icon: AlbumOutlinedIcon,
-  //   href: "/form-elements/radio",
-  // },
-  // {
-  //   title: "Slider",
-  //   icon: SwitchCameraOutlinedIcon,
-  //   href: "/form-elements/slider",
-  // },
-  // {
-  //   title: "Switch",
-  //   icon: SwitchLeftOutlinedIcon,
-  //   href: "/form-elements/switch",
-  // },
-  // {
-  //   title: "Form",
-  //   icon: DescriptionOutlinedIcon,
-  //   href: "/form-layouts/form-layouts",
-  // },
-  
   {
     title: " Employee List",
     icon: AutoAwesomeMosaicOutlinedIcon,
@@ -63,11 +27,15 @@ export const HQMenuitems = [
     href: "/dashboards/tax-list",
  },
  {
-  title: " Monthly Gas Price",
+  title: "Tax report",
+  icon: DashboardOutlinedIcon,
+  href: "/dashboards/tax-report",
+},
+ {
+  title: "Gas Price",
   icon: AutoAwesomeMosaicOutlinedIcon,
   href: "/tables/price-table",
-},
-  
+}, 
 ];
 
 export const BRMenuitems = [
@@ -75,51 +43,14 @@ export const BRMenuitems = [
     title: "Dashboard",
     icon: DashboardOutlinedIcon,
     href: "/dashboards/dashboard1",
- },
-
-  // {
-  //   title: "Autocomplete",
-  //   icon: AddToPhotosOutlinedIcon,
-  //   href: "/form-elements/autocomplete",
-  // },
-  // {
-  //   title: "Buttons",
-  //   icon: AspectRatioOutlinedIcon,
-  //   href: "/form-elements/button",
-  // },
-  // {
-  //   title: "Checkbox",
-  //   icon: AssignmentTurnedInOutlinedIcon,
-  //   href: "/form-elements/checkbox",
-  // },
-  // {
-  //   title: "Radio",
-  //   icon: AlbumOutlinedIcon,
-  //   href: "/form-elements/radio",
-  // },
-  // {
-  //   title: "Slider",
-  //   icon: SwitchCameraOutlinedIcon,
-  //   href: "/form-elements/slider",
-  // },
-  // {
-  //   title: "Switch",
-  //   icon: SwitchLeftOutlinedIcon,
-  //   href: "/form-elements/switch",
-  // },
-  // {
-  //   title: "Form",
-  //   icon: DescriptionOutlinedIcon,
-  //   href: "/form-layouts/form-layouts",
-  // },
-  
+ },  
   {
-    title: " Employee List23",
+    title: "Employee List",
     icon: AutoAwesomeMosaicOutlinedIcon,
     href: "/tables/basic-table",
   },
   {
-    title: " Monthly Gas Price",
+    title: "Gas Price",
     icon: AutoAwesomeMosaicOutlinedIcon,
     href: "/tables/price-table",
   }
