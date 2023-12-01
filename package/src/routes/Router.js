@@ -2,6 +2,7 @@ import { lazy } from "react";
 import { Navigate,Redirect } from "react-router-dom";
 import PriceTable from "../views/tables/PriceTable.js";
  import AddBenefit from "../views/dashboards/dashboard1-components/AddBenfit.js"
+import ProtectedRoute from "../views/ProtectedRoute.js";
 
 /****Layouts*****/
 const FullLayout = lazy(() => import("../layouts/FullLayout/FullLayout.js"));
@@ -30,7 +31,7 @@ const ThemeRoutes = [
   { path: "/", exact: true, element: <Navigate to="/login" /> },
   {
     path: "/",
-    element: <FullLayout />,
+    element:  <ProtectedRoute>{<FullLayout />}</ProtectedRoute>,
     children: [
       { path: "dashboards/dashboard1", exact: true, element: <Dashboard1 /> },
       { path: "dashboards/tax-list", element: <TaxList /> },
