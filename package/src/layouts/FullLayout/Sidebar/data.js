@@ -15,17 +15,6 @@ export const HQMenuitems = [
     href: "/dashboards/dashboard1",
  },
  
-  {
-    title: " Employee List",
-    icon: AutoAwesomeMosaicOutlinedIcon,
-    href: "/tables/basic-table",
-  },
- 
-  {
-    title: "Tax page",
-    icon: DashboardOutlinedIcon,
-    href: "/dashboards/tax-list",
- },
  {
   title: "Tax report",
   icon: DashboardOutlinedIcon,
@@ -50,10 +39,10 @@ export const BRMenuitems = [
     href: "/tables/basic-table",
   },
   {
-    title: "Gas Price",
-    icon: AutoAwesomeMosaicOutlinedIcon,
-    href: "/tables/price-table",
-  }
+    title: "Tax page",
+    icon: DashboardOutlinedIcon,
+    href: "/dashboards/tax-list",
+ }
 ];
 
 

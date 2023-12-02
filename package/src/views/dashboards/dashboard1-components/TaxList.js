@@ -3,6 +3,7 @@ import numeral from "numeral";
 import {
   Box,
   Button,
+  TextField,
   Typography,
   Table,
   TableBody,
@@ -16,7 +17,7 @@ import {
   MenuItem
 } from "@mui/material";
 import { useLocation } from "react-router-dom";
-import { branch_employees_tax, month_list } from "../../../services/taxapi";
+import { bulkTaxUpdateInfo,updateTaxinfo,branch_employees_tax, month_list,branch_employee_tax_by_status} from "../../../services/taxapi";
 import { currentUser } from "../../../utils/tokenUtils";
 
 const TaxList = () => {
@@ -27,15 +28,15 @@ const TaxList = () => {
   const [selectedMonth, setSelectedMonth] = useState("");
   const [monthOptions, setMonthOptions] = useState([]);
   const [editedData, setEditedData] = useState({});
- 
-
   const [data, setData] = useState([]);
+  const [getDraftData,setDraftData] = useState([]);
   const location = useLocation();
   const stateData = location.state;
   const currentDate = new Date();
   const currentmonth = currentDate.getMonth() + 1;
   const currentYear = currentDate.getFullYear();
   let currentMonth = `${currentmonth}/${currentYear}`;
+  const status="Draft";
   if (stateData !== null) {
     const year = stateData.year;
     const month = stateData.month;
@@ -45,8 +46,10 @@ const TaxList = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await branch_employees_tax(branch, currentMonth);
+        const data = await branch_employees_tax(branch,currentMonth);
+        const draftData=await branch_employee_tax_by_status(branch,currentMonth,status);
         setData(data);
+        setDraftData(draftData);
       } catch (error) {
         console.log(error);
       }
@@ -87,7 +90,9 @@ const TaxList = () => {
 
   const handleSearch = async () => {
     try {
-      const data = await branch_employees_tax(branch, selectedMonth);
+      const data = await branch_employees_tax(branch,selectedMonth);
+      const draftData=await branch_employee_tax_by_status(branch,selectedMonth,status);
+      setDraftData(draftData);
       setData(data);
     } catch (error) {
       console.log(error);
@@ -101,19 +106,33 @@ const TaxList = () => {
     }));
   };
   
-  const handleSave = (id) => {
-    const editedRowData = editedData[id];
-    // Perform the save operation with the editedRowData
-    console.log(editedRowData);
-  
+  const handleSave = async (id) => {
+    const editedRowData = {
+      ...editedData[id],
+      id: id
+    };
+    const isEmpty = Object.keys(editedRowData).length === 1; // Check if only the 'id' property exists
+    if (isEmpty) {
+      alert("Please Edit the field you want to Update first");
+      return 0;
+    }
+    try {
+      await updateTaxinfo(editedRowData);
+      alert("You have successfully updated");
+      window.location.reload();
+    } catch (error) {
+      alert("Error Check Your data");
+      //console.error("Error updating employee data:", error);
+      // Handle error here
+    }
     setEditedData((prevState) => ({
       ...prevState,
       [id]: false
     }));
   };
+
   const handleFieldChange = (event, id) => {
     const { name, value } = event.target;
-  
     setEditedData((prevState) => ({
       ...prevState,
       [id]: {
@@ -122,6 +141,28 @@ const TaxList = () => {
       }
     }));
   };
+
+ const submitToHeadoffice=async()=>{
+    if(getDraftData.length===0){
+      alert("You either submit data befor or you try empty data");
+      return 0;
+      }
+   
+    const newData = getDraftData.map((data) => ({
+      id: data.id,
+      status: "Submitted"
+    }));
+
+    try {
+      await bulkTaxUpdateInfo(newData);
+      alert("You have successfully updated");
+      window.location.reload();
+    } catch (error) {
+      alert("Error Check Your data");
+      //console.error("Error updating employee data:", error);
+      // Handle error here
+    }
+  }
 
   return (
     <Box>
@@ -147,6 +188,7 @@ const TaxList = () => {
             Search
           </Button>
         </Box>
+        
       </Box>
       <TableContainer component={Paper}>
         <Table
@@ -209,7 +251,7 @@ const TaxList = () => {
       </TableCell>
       <TableCell>
         {editedData[row.id] ? (
-          <input
+          <TextField
             type="text"
             name="tin"
             value={editedData[row.id]?.tin || row.tin}
@@ -221,8 +263,8 @@ const TaxList = () => {
       </TableCell>
       <TableCell>
         {editedData[row.id] ? (
-          <input
-            type="text"
+          <TextField
+          type="number"
             name="salary"
             value={editedData[row.id]?.salary || row.salary}
             onChange={(event) => handleFieldChange(event, row.id)}
@@ -234,8 +276,8 @@ const TaxList = () => {
 
       <TableCell>
         {editedData[row.id] ? (
-          <input
-            type="text"
+          <TextField
+          type="number"
             name="transport"
             value={editedData[row.id]?.transport || row.transport}
             onChange={(event) => handleFieldChange(event, row.id)}
@@ -247,8 +289,8 @@ const TaxList = () => {
 
       <TableCell>
         {editedData[row.id] ? (
-          <input
-            type="text"
+          <TextField
+          type="number"
             name="house"
             value={editedData[row.id]?.house || row.house}
             onChange={(event) => handleFieldChange(event, row.id)}
@@ -260,8 +302,8 @@ const TaxList = () => {
      
       <TableCell>
         {editedData[row.id] ? (
-          <input
-            type="text"
+          <TextField
+          type="number"
             name="benefit"
             value={editedData[row.id]?.benefit || row.benefit}
             onChange={(event) => handleFieldChange(event, row.id)}
@@ -270,7 +312,10 @@ const TaxList = () => {
           <Typography>{numeral(row.benefit).format("0,0.00")}</Typography>
         )}
       </TableCell>
+      
       <TableCell>
+      {row.status=='Draft'||row.status=='Rejected'?(
+        <Typography>
         {editedData[row.id] ? (
           <Button
             variant="contained"
@@ -288,6 +333,7 @@ const TaxList = () => {
             Edit
           </Button>
         )}
+        </Typography>):(<Typography>{row.status}</Typography>)}
       </TableCell>
       </TableRow>
     ))}
@@ -303,6 +349,12 @@ const TaxList = () => {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
+
+      <Button variant="contained"
+            onClick={() =>submitToHeadoffice()}
+            color="primary">
+            Submit Data
+          </Button>
     </Box>
   );
 };
