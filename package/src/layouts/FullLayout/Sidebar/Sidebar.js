@@ -1,7 +1,6 @@
 import React from "react";
 import { useLocation } from "react-router";
 import { Link, NavLink } from "react-router-dom";
-import { blue } from "@mui/material/colors";
 
 import {
   Box,
@@ -32,6 +31,15 @@ const Sidebar = (props) => {
     }
   };
   const user = currentUser() || { branch_type: '' }; 
+  // if (user.Group && user.Group['Employee']) {
+  //   console.log("User is an Employee");
+  // }
+  // if (user.Group && 'Super Administrator' in user.Group) {
+  //   console.log('User is a Super Administrator');
+  // }
+
+
+  // console.log(user.Group.Employee)
   let Menuitems = BRMenuitems;
   if (user.branch_type === "HQ") {
     Menuitems = HQMenuitems;
