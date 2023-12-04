@@ -34,7 +34,11 @@ export default function SignIn() {
           localStorage.setItem("token", token);
           navigate("/dashboards/dashboard1");
       } catch (error) {
-        setErrorMessage("Invalid username or password");
+        let message=error.response.data.message;
+        if(error.response.status===500){
+          message="System Connection Problem tray again";
+        }
+        setErrorMessage(message);
       }
       finally {
         setIsLoading(false); // Enable inputs and button

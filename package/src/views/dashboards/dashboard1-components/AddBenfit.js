@@ -12,7 +12,10 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  Dialog, DialogTitle, DialogContent, DialogActions
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import { currentUser } from "../../../utils/tokenUtils";
 import { branch_employees_salary } from "../../../services/employeeapi";
@@ -25,9 +28,9 @@ const AddBenefit = () => {
   const stateData = location.state;
   const year = stateData.year;
   const month = stateData.month;
-  //const branch=user.branch;
-  const branch=120;
-  const currentMonth=`${month}/${year}`;
+  const branch = user.branch_id;
+  //const branch=120;
+  const currentMonth = `${month}/${year}`;
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const openConfirmationDialog = () => {
     setIsConfirmationOpen(true);
@@ -55,7 +58,7 @@ const AddBenefit = () => {
 
   const handleSave = () => {
     const hasEmptyFields = employeeData.some(
-      (employee) => employee.benefit === "" || employee.bonus === ""
+      (employee) => employee.benefit === ""
     );
     if (hasEmptyFields) {
       alert("Error: Required fields are empty");
@@ -65,45 +68,45 @@ const AddBenefit = () => {
   };
 
   const handleConfirmSave = () => {
-   const taxRecords = []; 
-   employeeData.forEach((employee, index) => {
-     const emp = {
-       fullName:
-         employee.Employee.User.Person.first_name +
-         " " +
-         employee.Employee.User.Person.middle_name +
-         " " +
-         employee.Employee.User.Person.last_name,
-       benefit: employee.benefit,
-       branch: employee.branch_id,
-       grade_id: employee.grade_id,
-       step_id: employee.step_id,
-       house: employee.allowance.house,
-       transport: employee.allowance.transportAllowance,
-       tin: employee.position_id,
-       month: currentMonth,
-       salary: employee.salary
-     };
-     taxRecords.push(emp);
-   });
-    bulkTaxRecord(taxRecords)
-    .then(registerData => {
-      closeConfirmationDialog();
-      alert("You have sucussfully registered");
-      navigate("/dashboards/tax-list", {state: stateData});
-    })
-    .catch(error => {
-      alert("You have an error");
-      console.error(error);
+    const taxRecords = [];
+    employeeData.forEach((employee, index) => {
+      const emp = {
+        fullName:
+          employee.Employee.User.Person.first_name +
+          " " +
+          employee.Employee.User.Person.middle_name +
+          " " +
+          employee.Employee.User.Person.last_name,
+        benefit: employee.benefit,
+        branch: employee.branch_id,
+        grade_id: employee.grade_id,
+        step_id: employee.step_id,
+        house: employee.allowance.house,
+        transport: employee.allowance.transportAllowance,
+        tin: employee.position_id,
+        month: currentMonth,
+        salary: employee.salary,
+      };
+      taxRecords.push(emp);
     });
+    bulkTaxRecord(taxRecords)
+      .then((registerData) => {
+        closeConfirmationDialog();
+        alert("You have sucussfully registered");
+        navigate("/dashboards/tax-list", { state: stateData });
+      })
+      .catch((error) => {
+        alert("You have an error");
+        console.error(error);
+      });
   };
 
-    const handleBenefitChange = (index, value) => {
+  const handleBenefitChange = (index, value) => {
     const updatedEmployeeData = [...employeeData];
-    updatedEmployeeData[index].benefit= value;
+    updatedEmployeeData[index].benefit = value;
     setEmployeeData(updatedEmployeeData);
   };
-  
+
   const handleTINChange = (index, value) => {
     const updatedEmployeeData = [...employeeData];
     updatedEmployeeData[index].position_id = value;
@@ -167,9 +170,10 @@ const AddBenefit = () => {
             <TableRow key={employee.id}>
               <TableCell>{index + 1}</TableCell>
               <TableCell>
-                {employee.Employee.User.Person.first_name}
+                {employee.Employee.User.Person.first_name}{" "}
                 {employee.Employee.User.Person.last_name}
               </TableCell>
+
               <TableCell>
                 <TextField
                   type="number"
@@ -220,19 +224,18 @@ const AddBenefit = () => {
                   helperText={employee.allowance.house === "" ? "Required" : ""}
                 />
               </TableCell>
+
               <TableCell>
-              
-  <TextField
-    type="number"
-    size="small"
-    color="secondary"
-    value={employee.benefit}
-    onChange={(e) => handleBenefitChange(index, e.target.value)}
-    error={employee.benefit === ""}
-    helperText={employee.benefit === "" ? "Required" : ""}
-  />
-</TableCell>
-              
+                <TextField
+                  type="number"
+                  size="small"
+                  color="secondary"
+                  value={employee.benefit}
+                  onChange={(e) => handleBenefitChange(index, e.target.value)}
+                  error={employee.benefit === ""}
+                  helperText={employee.benefit === "" ? "Required" : ""}
+                />
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -255,19 +258,19 @@ const AddBenefit = () => {
       </Box>
 
       <Dialog open={isConfirmationOpen} onClose={closeConfirmationDialog}>
-  <DialogTitle>Confirm Save</DialogTitle>
-  <DialogContent>
-    Are you sure you want to save the employee data?
-  </DialogContent>
-  <DialogActions>
-    <Button onClick={closeConfirmationDialog} color="error">
-      Cancel
-    </Button>
-    <Button onClick={handleConfirmSave} color="success">
-      Save
-    </Button>
-  </DialogActions>
-</Dialog>
+        <DialogTitle>Confirm Save</DialogTitle>
+        <DialogContent>
+          Are you sure you want to save the employee data?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeConfirmationDialog} color="error">
+            Cancel
+          </Button>
+          <Button onClick={handleConfirmSave} color="success">
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

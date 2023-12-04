@@ -22,7 +22,7 @@ const BasicTable = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedYear, setSelectedYear] = useState(2023);
   const [selectedMonth, setSelectedMonth] = useState(11);
-  const branch=user.branch;
+  const branch=user.branch_id;
   //const branch=120;
   const handleOpenDialog = () => {
     setOpenDialog(true);

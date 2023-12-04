@@ -10,14 +10,16 @@ import {
   TablePagination,
   Paper,
   IconButton,
+  TextField,
 } from "@mui/material";
-import { Edit, Delete } from "@mui/icons-material";
-import { getPrice } from "../../services/gaspriceapi";
-
+import { Edit,Save} from "@mui/icons-material";
+import { getPrice, updatePrice } from "../../services/gaspriceapi";
 const PriceListTable = () => {
   const [data, setData] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [editIndex, setEditIndex] = useState(-1);
+  const [editedPrice, setEditedPrice] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -25,20 +27,31 @@ const PriceListTable = () => {
         const data = await getPrice();
         setData(data);
       } catch (error) {
-        console.log(error);
+        alert("Error Check Your data");
       }
     };
     fetchData();
   }, []);
 
   const handleEdit = (row) => {
-    // Handle edit action for the row
-    console.log("Edit row", row);
+    setEditIndex(row.id);  
+    setEditedPrice(row.price); 
   };
 
-  const handleDelete = (row) => {
-    // Handle delete action for the row
-    console.log("Delete row", row);
+  const handleSave = async (row) => {
+    try {
+      const data={
+        "id":row.id ,
+        "price":editedPrice
+      }
+      await updatePrice(data); 
+      setEditIndex(-1); 
+      alert("You have successfully updated");
+      window.location.reload();
+    } catch (error) {
+      alert("Error Check Your data");
+      // Handle error if needed
+    }
   };
 
   const handleChangePage = (event, newPage) => {
@@ -49,9 +62,8 @@ const PriceListTable = () => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-
+  
   const count = data.length;
-
   return (
     <TableContainer component={Paper}>
       <Table
@@ -75,22 +87,12 @@ const PriceListTable = () => {
             </TableCell>
             <TableCell>
               <Typography color="textSecondary" variant="h6">
-                Month
+                Created Date
               </Typography>
             </TableCell>
             <TableCell>
               <Typography color="textSecondary" variant="h6">
-                Year
-              </Typography>
-            </TableCell>
-            <TableCell>
-              <Typography color="textSecondary" variant="h6">
-                Year Month
-              </Typography>
-            </TableCell>
-            <TableCell>
-              <Typography color="textSecondary" variant="h6">
-                Status
+                Updated Date
               </Typography>
             </TableCell>
             <TableCell>
@@ -101,44 +103,58 @@ const PriceListTable = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {(data
+          {data
             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             .map((price, index) => (
               <TableRow key={price.id}>
                 <TableCell>{index + 1 + page * rowsPerPage}</TableCell>
                 <TableCell>
-                  <Typography variant="h6">{price.price}</Typography>
+                  {editIndex === price.id ? (
+                    <TextField
+                    type="number"
+                      value={editedPrice}
+                      onChange={(e) => setEditedPrice(e.target.value)}
+                      fullWidth
+                      autoFocus
+                    />
+                  ) : (
+                    <Typography variant="h6">{price.price}</Typography>
+                  )}
                 </TableCell>
                 <TableCell>
-                  <Typography variant="h6">{price.month}</Typography>
+                  <Typography variant="h6">
+                    {new Date(price.createdAt).toLocaleDateString()}
+                  </Typography>
                 </TableCell>
                 <TableCell>
-                  <Typography variant="h6">{price.year}</Typography>
+                  <Typography variant="h6">
+                    {new Date(price.updatedAt).toLocaleDateString()}
+                  </Typography>
                 </TableCell>
+                
                 <TableCell>
-                  <Typography variant="h6">{price.yearmonth}</Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="h6">{price.status}</Typography>
-                </TableCell>
-                <TableCell>
-                  <IconButton
-                    onClick={() => handleEdit(price)}
-                    aria-label="Edit"
-                    color="primary"
-                  >
-                    <Edit />
-                  </IconButton>
-                  <IconButton
-                    onClick={() => handleDelete(price)}
-                    aria-label="Delete"
-                    color="error"
-                  >
-                    <Delete />
-                  </IconButton>
+                {index==0 ?(<Typography>  
+                  {editIndex === price.id ? (
+                    <IconButton
+                      onClick={() => handleSave(price)}
+                      aria-label="Save"
+                      color="primary"
+                    >
+                      <Save />
+                    </IconButton>
+                  ) : (
+                    <IconButton
+                      onClick={() => handleEdit(price)}
+                      aria-label="Edit"
+                      color="primary"
+                    >
+                      <Edit />
+                    </IconButton>
+                  )}
+                   </Typography>) :(<Typography>No Action</Typography>)}
                 </TableCell>
               </TableRow>
-            )))}
+            ))}
         </TableBody>
       </Table>
       <TablePagination
