@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import numeral from "numeral";
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
 import {
   Box,
   Button,
@@ -14,7 +16,11 @@ import {
   TablePagination,
   Paper,
   Select,
-  MenuItem
+  MenuItem,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import { useLocation } from "react-router-dom";
 import { bulkTaxUpdateInfo,updateTaxinfo,branch_employees_tax, month_list,branch_employee_tax_by_status} from "../../../services/taxapi";
@@ -36,6 +42,15 @@ const TaxList = () => {
   const currentmonth = currentDate.getMonth() + 1;
   const currentYear = currentDate.getFullYear();
   let currentMonth = `${currentmonth}/${currentYear}`;
+
+  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+  const openConfirmationDialog = () => {
+    setIsConfirmationOpen(true);
+  };
+  const closeConfirmationDialog = () => {
+    setIsConfirmationOpen(false);
+  };
+
   const status="Draft";
   if (stateData !== null) {
     const year = stateData.year;
@@ -130,6 +145,8 @@ const TaxList = () => {
       [id]: false
     }));
   };
+  
+
 
   const handleFieldChange = (event, id) => {
     const { name, value } = event.target;
@@ -142,12 +159,20 @@ const TaxList = () => {
     }));
   };
 
- const submitToHeadoffice=async()=>{
+
+  const  submitToHeadoffice  = () => {
     if(getDraftData.length===0){
       alert("You either submit data befor or you try empty data");
       return 0;
       }
-   
+      openConfirmationDialog();
+    
+  }
+ const handleConfirmSave =async()=>{
+    if(getDraftData.length===0){
+      alert("You either submit data befor or you try empty data");
+      return 0;
+      }
     const newData = getDraftData.map((data) => ({
       id: data.id,
       status: "Submitted"
@@ -155,7 +180,8 @@ const TaxList = () => {
 
     try {
       await bulkTaxUpdateInfo(newData);
-      alert("You have successfully updated");
+      alert("You have successfully submitte the data");
+      closeConfirmationDialog();
       window.location.reload();
     } catch (error) {
       alert("Error Check Your data");
@@ -355,6 +381,22 @@ const TaxList = () => {
             color="primary">
             Submit Data
           </Button>
+
+
+          <Dialog open={isConfirmationOpen} onClose={closeConfirmationDialog}>
+        <DialogTitle>Confirm Save</DialogTitle>
+        <DialogContent>
+          Are you sure you want to submitte the employee data?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeConfirmationDialog} color="error">
+            Cancel
+          </Button>
+          <Button onClick={handleConfirmSave} color="success">
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
