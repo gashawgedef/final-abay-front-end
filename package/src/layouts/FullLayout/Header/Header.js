@@ -71,7 +71,7 @@ const Header = (props) => {
 
   return (
     <AppBar sx={props.sx} elevation={0} className={props.customClass}>
-      <Toolbar sx={{ background: "#448aff" }}>
+      <Toolbar sx={{ background: "#F8F8FF" }}>
         <IconButton
           color="inherit"
           aria-label="menu"
@@ -90,7 +90,7 @@ const Header = (props) => {
         </IconButton>
       
         <Box flexGrow={1} />
-        <Typography variant="h1" style={{ textAlign: "center", fontWeight: "bold", color: "white" ,fontSize: "1.5rem",width:'100%'}}>
+        <Typography variant="h1" style={{ textAlign: "center", fontWeight: "bold", color: "black" ,fontSize: "1.5rem",width:'100%'}}>
           Abay Bank Employee Tax Record System
         </Typography>
         {/**  */}
@@ -99,35 +99,7 @@ const Header = (props) => {
         {/* ------------------------------------------- */}
         {/* Notifications Dropdown */}
         {/* ------------------------------------------- */}
-        <IconButton
-          aria-label="menu"
-          color="inherit"
-          aria-controls="notification-menu"
-          aria-haspopup="true"
-          onClick={handleClick}
-        >
-          <NotificationsNoneOutlinedIcon width="20" height="20" />
-        </IconButton>
-        <Menu
-          id="notification-menu"
-          anchorEl={anchorEl}
-          keepMounted
-          open={Boolean(anchorEl)}
-          onClose={handleClose}
-          anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-          transformOrigin={{ horizontal: "right", vertical: "top" }}
-          sx={{
-            "& .MuiMenu-paper": {
-              width: "200px",
-              right: 0,
-              top: "70px !important",
-            },
-          }}
-        >
-          <MenuItem onClick={handleClose}>Action</MenuItem>
-          <MenuItem onClick={handleClose}>Action Else</MenuItem>
-          <MenuItem onClick={handleClose}>Another Action</MenuItem>
-        </Menu>
+   
         {/* ------------------------------------------- */}
         {/* End Notifications Dropdown */}
         {/* ------------------------------------------- */}
@@ -197,18 +169,7 @@ const Header = (props) => {
             </Box>
           </MenuItem>
           <Divider />
-          <MenuItem onClick={handleClose4}>
-            <ListItemIcon>
-              <PersonAddOutlinedIcon fontSize="small" />
-            </ListItemIcon>
-            Add another account
-          </MenuItem>
-          <MenuItem onClick={handleClose4}>
-            <ListItemIcon>
-              <SettingsOutlinedIcon fontSize="small" />
-            </ListItemIcon>
-            Settings
-          </MenuItem>
+          
           
           <MenuItem onClick={handleLogout}>
             <ListItemIcon>
