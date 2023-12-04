@@ -31,7 +31,7 @@ const Sidebar = (props) => {
       setOpen(index);
     }
   };
-  const user = currentUser();
+  const user = currentUser() || { branch_type: '' }; 
   let Menuitems = BRMenuitems;
   if (user.branch_type === "HQ") {
     Menuitems = HQMenuitems;

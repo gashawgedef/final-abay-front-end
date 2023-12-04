@@ -1,15 +1,39 @@
- export function currentUser() {
+//  export function currentUser() {
+//     const token = localStorage.getItem("token");
+//     const base64Url = token.split(".")[1];
+//     const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+//     const jsonPayload = decodeURIComponent(
+//       atob(base64)
+//         .split("")
+//         .map(function (c) {
+//           return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+//         })
+//         .join("")
+//     );
+//     let decoded =JSON.parse(jsonPayload)
+//     return decoded.user;
+//   }
+
+
+
+
+  export function currentUser() {
     const token = localStorage.getItem("token");
-    const base64Url = token.split(".")[1];
-    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-    const jsonPayload = decodeURIComponent(
-      atob(base64)
-        .split("")
-        .map(function (c) {
-          return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-        })
-        .join("")
-    );
-    let decoded =JSON.parse(jsonPayload)
-    return decoded.user;
+  
+    if (token) {
+      const base64Url = token.split(".")[1];
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split("")
+          .map(function (c) {
+            return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+          })
+          .join("")
+      );
+      let decoded = JSON.parse(jsonPayload);
+      return decoded.user;
+    }
+  
+    return null;
   }
