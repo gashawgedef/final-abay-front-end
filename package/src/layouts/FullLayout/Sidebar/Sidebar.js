@@ -29,7 +29,7 @@ const Sidebar = (props) => {
   };
   const user = currentUser() || { branch_type: '' }; 
   let Menuitems = BRMenuitems;
-  if (user.branch_type === "HQ") {
+  if (user.branch_type === "BR") {
     Menuitems = HQMenuitems;
   }
 

@@ -15,7 +15,7 @@ const Login = lazy(() => import("../views/dashboards/SignIn.js"));
 const BasicTable = lazy(() => import("../views/tables/BasicTable.js"));
 const TaxList = lazy(() => import("../views/dashboards/dashboard1-components/TaxList.js"));
 const TaxReport = lazy(() => import("../views/dashboards/dashboard1-components/TaxReport.js"));
-
+const EmployeeTin = lazy(() => import("../views/dashboards/dashboard1-components/EmployeeTin.js"));
 
 // form elements
 const ExAutoComplete = lazy(() =>
@@ -38,6 +38,7 @@ const ThemeRoutes = [
     children: [
       { path: "dashboards/dashboard1", exact: true, element: <Dashboard1 /> },
       { path: "dashboards/tax-list", element: <TaxList /> },
+      { path: "dashboards/tin-list", element: <EmployeeTin/> },
       { path: "dashboards/tax-report", element: <TaxReport /> },
       { path: "tables/basic-table", element: <BasicTable /> },
       { path: "tables/price-table", element: <PriceTable /> },
