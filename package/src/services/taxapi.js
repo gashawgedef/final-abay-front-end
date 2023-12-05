@@ -10,6 +10,29 @@ export const branch_employees_tax = async(branch,month) => {
     }
   };
 
+export const get_branch_tax_report = async(branch,month) => {
+    const url = `${BASE_URL}/people/taxreport/branch?branch=${encodeURIComponent(branch)}&month=${encodeURIComponent(month)}`;
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  export const get_Submit_branches = async(month) => {
+    const url = `${BASE_URL}/people/gettax/branch/submited?month=${encodeURIComponent(month)}`;
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+
   export const branch_employee_tax_by_status = async(branch,month,status) => {
     const url = `${BASE_URL}/people/taxrecord/branch/status?branch=${encodeURIComponent(branch)}&month=${encodeURIComponent(month)}&status=${encodeURIComponent(status)}`;
     try {

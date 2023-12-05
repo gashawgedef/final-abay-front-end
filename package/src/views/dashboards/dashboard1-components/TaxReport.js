@@ -21,7 +21,7 @@ import {
 
 } from "@mui/material";
 import { useLocation } from "react-router-dom";
-import { branch_employees_tax, month_list } from "../../../services/taxapi";
+import { get_branch_tax_report, month_list } from "../../../services/taxapi";
 import { ERP_Branch_List } from "../../../services/erpBranchapi";
 import { currentUser } from "../../../utils/tokenUtils";
 
@@ -29,13 +29,6 @@ const TaxReport = () => {
   const user = currentUser();
   const branch=user.branch_id;
   //const branch = 120;
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [selectedMonth, setSelectedMonth] = useState("");
-  const [selectedBranch, setSelectedBranch] = useState("");
-  const [branchOptions, setBranchOptions] = useState([]);
-  const [monthOptions, setMonthOptions] = useState([]);
-  const [data, setData] = useState([]);
   const location = useLocation();
   const stateData = location.state;
   const currentDate = new Date();
@@ -47,11 +40,18 @@ const TaxReport = () => {
     const month = stateData.month;
     currentMonth = `${month}/${year}`;
   }
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [selectedMonth, setSelectedMonth] = useState("");
+  const [selectedBranch, setSelectedBranch] = useState("");
+  const [branchOptions, setBranchOptions] = useState([]);
+  const [monthOptions, setMonthOptions] = useState([]);
+  const [data, setData] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await branch_employees_tax(branch, currentMonth);
+        const data = await get_branch_tax_report(branch,currentMonth);
         setData(data);
       } catch (error) {
         console.log(error);
@@ -59,7 +59,7 @@ const TaxReport = () => {
     };
 
     fetchData();
-  }, []);
+  }, [branch, currentMonth]);
 
   useEffect(() => {
     const fetchBranchOptions = async () => {
@@ -79,7 +79,7 @@ const TaxReport = () => {
     fetchMonthOptions();
   }, []);
 
-  const handleChangePage = (event, newPage) => {
+  const handleChangePage = (event,newPage) => {
     setPage(newPage);
   };
 
@@ -117,7 +117,7 @@ const TaxReport = () => {
 
   const handleSearch = async () => {
     try {
-      const data = await branch_employees_tax(selectedBranch.id, selectedMonth);
+      const data = await get_branch_tax_report(selectedBranch.id,selectedMonth);
       setData(data);
     } catch (error) {
       console.log(error);
@@ -125,8 +125,8 @@ const TaxReport = () => {
   };
 
   const handleExport = () => {
-    const headers = ["Name", "Tin", "House","Transport","Benefit"]
-    const newdata=[headers, ...data.map((item) => [item.fullName, item.tin, item.house,item.transport,item.benefit])];
+    const headers = ["Name", "Tin", "House","Transport","Benefit","Sum","Tax","Net Pay"]
+    const newdata=[headers, ...data.map((item) => [item.fullName, item.tin, item.house,item.transport,item.benefit,item.totalSum,item.totalTax,item.netPay])];
     // Create a new workbook and worksheet
     const workbook = XLSX.utils.book_new();
     const worksheet = XLSX.utils.aoa_to_sheet(newdata);
@@ -165,7 +165,6 @@ const TaxReport = () => {
         renderInput={(params) => <TextField {...params}  />}
         sx={{ width: "200px" }}
       />
-    
       <Select
         value={selectedMonth}
         onChange={handleMonthChange}
@@ -225,17 +224,17 @@ const TaxReport = () => {
             </TableCell>
             <TableCell>
               <Typography color="textSecondary" variant="h6">
-                Transport 
+                Sum 
               </Typography>
             </TableCell>
             <TableCell>
               <Typography color="textSecondary" variant="h6">
-                House 
+                Tax
               </Typography>
             </TableCell>
             <TableCell>
               <Typography color="textSecondary" variant="h6">
-                Benefit
+                NetPay
               </Typography>
             </TableCell>
             <TableCell>
@@ -278,17 +277,17 @@ const TaxReport = () => {
                 </TableCell>
                 <TableCell >
                   <Typography variant="h6">
-                    {numeral(emp.transport).format("0,0")} 
+                    {numeral(emp.totalSum).format("0,0")} 
                   </Typography>
                 </TableCell>
                 <TableCell >
                   <Typography variant="h6">
-                    {numeral(emp.house).format("0,0")} 
+                    {numeral(emp.totalTax).format("0,0")} 
                   </Typography>
                 </TableCell>
                 <TableCell>
                   <Typography>
-                  {numeral(emp.benefit).format("0,0")} 
+                  {numeral(emp.netPay).format("0,0")} 
                   </Typography>
                 </TableCell>
 

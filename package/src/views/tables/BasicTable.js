@@ -86,7 +86,7 @@ const BasicTable = () => {
           </Button>
         </Box>
         <Box sx={{ overflow: "auto", mt: 3 }}>
-          <ExTable />
+           <ExTable />
         </Box>
       </CardContent>
       <Dialog open={openDialog} onClose={handleCloseDialog}  >

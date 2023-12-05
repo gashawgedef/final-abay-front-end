@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import numeral from "numeral";
-import Alert from '@mui/material/Alert';
-import AlertTitle from '@mui/material/AlertTitle';
 import {
   Box,
   Button,
@@ -21,6 +19,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Alert,AlertTitle
 } from "@mui/material";
 import { useLocation } from "react-router-dom";
 import { bulkTaxUpdateInfo,updateTaxinfo,branch_employees_tax, month_list,branch_employee_tax_by_status} from "../../../services/taxapi";
@@ -146,8 +145,6 @@ const TaxList = () => {
     }));
   };
   
-
-
   const handleFieldChange = (event, id) => {
     const { name, value } = event.target;
     setEditedData((prevState) => ({
