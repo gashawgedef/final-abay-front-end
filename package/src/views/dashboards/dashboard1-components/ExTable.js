@@ -120,11 +120,11 @@ import {currentUser} from "../../../utils/tokenUtils"
                   </Typography>
                 </TableCell>
                 <TableCell>
-                  <Typography variant="h6">{emp.position_id}</Typography>
+                  <Typography variant="h6">{emp.Employee.User.tin_number}</Typography>
                 </TableCell>
                 <TableCell>
                   <Typography color="textSecondary" variant="h6">
-                    {numeral(emp.salary).format("0,0")}
+                    {numeral(emp.allowance.salary).format("0,0")}
                   </Typography>
                 </TableCell>
                 <TableCell >

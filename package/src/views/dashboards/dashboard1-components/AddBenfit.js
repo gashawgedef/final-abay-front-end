@@ -29,6 +29,8 @@ const AddBenefit = () => {
   const year = stateData.year;
   const month = stateData.month;
   const branch = user.branch_id;
+  const userName=user.first_name+" "+user.middle_name;
+  console.log(userName);
   //const branch=120;
   const currentMonth = `${month}/${year}`;
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
@@ -83,20 +85,23 @@ const AddBenefit = () => {
         step_id: employee.step_id,
         house: employee.allowance.house,
         transport: employee.allowance.transportAllowance,
-        tin: employee.position_id,
+        tin: employee.Employee.User.tin_number,
         month: currentMonth,
-        salary: employee.salary,
+        salary: employee.allowance.salary,
+        gas_price:employee.allowance.price,
+        draftby:userName
       };
       taxRecords.push(emp);
     });
-    bulkTaxRecord(taxRecords)
+   
+     bulkTaxRecord(taxRecords)
       .then((registerData) => {
         closeConfirmationDialog();
-        alert("You have sucussfully registered");
-        navigate("/dashboards/tax-list", { state: stateData });
+      alert("You have sucussfully registered");
+       navigate("/dashboards/tax-list", { state: stateData });
       })
       .catch((error) => {
-        alert("You have an error");
+        //alert("You have an error");
         console.error(error);
       });
   };
@@ -109,13 +114,13 @@ const AddBenefit = () => {
 
   const handleTINChange = (index, value) => {
     const updatedEmployeeData = [...employeeData];
-    updatedEmployeeData[index].position_id = value;
+    updatedEmployeeData[index].Employee.User.tin_number = value;
     setEmployeeData(updatedEmployeeData);
   };
 
   const handleSalaryChange = (index, value) => {
     const updatedEmployeeData = [...employeeData];
-    updatedEmployeeData[index].salary = value;
+    updatedEmployeeData[index].allowance.salary = value;
     setEmployeeData(updatedEmployeeData);
   };
 
@@ -176,13 +181,13 @@ const AddBenefit = () => {
 
               <TableCell>
                 <TextField
-                  type="number"
+                  type="text"
                   size="small"
                   color="secondary"
-                  value={employee.position_id}
+                  value={employee.Employee.User.tin_number}
                   onChange={(e) => handleTINChange(index, e.target.value)}
-                  error={employee.position_id === ""}
-                  helperText={employee.position_id === "" ? "Required" : ""}
+                  error={employee.Employee.User.tin_number===""}
+                  helperText={employee.Employee.User.tin_number === "" ? "Required" : ""}
                 />
               </TableCell>
               <TableCell>
@@ -190,10 +195,10 @@ const AddBenefit = () => {
                   type="number"
                   size="small"
                   color="secondary"
-                  value={employee.salary}
+                  value={employee.allowance.salary}
                   onChange={(e) => handleSalaryChange(index, e.target.value)}
-                  error={employee.salary === ""}
-                  helperText={employee.salary === "" ? "Required" : ""}
+                  error={employee.allowance.salary === ""}
+                  helperText={employee.allowance.salary === "" ? "Required" : ""}
                 />
               </TableCell>
               <TableCell>

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
   Button,
-  TextField,
   Typography,
   Table,
   TableBody,
@@ -11,15 +10,11 @@ import {
   TableContainer,
   TablePagination,
   Paper,
-  Card,
-  Grid,
   Box,
   Select,
   MenuItem,
-  Avatar,
 } from "@mui/material";
 import { currentUser } from "../../utils/tokenUtils";
-import { ProductPerformance, DailyActivities } from "./dashboard1-components";
 import { get_Submit_branches, month_list,branch_employee_tax_by_status} from "../../services/taxapi";
 const Dashboard1 = () => {
   const user = currentUser();
@@ -34,6 +29,7 @@ const Dashboard1 = () => {
   const [data, setData] = useState([]);
   const [submittedData, setsubmittedData] = useState([]);
   const [selectedMonth, setSelectedMonth] = useState(currentMonth);
+  
   const [monthOptions, setMonthOptions] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
@@ -44,7 +40,6 @@ const Dashboard1 = () => {
         console.log(error);
       }
     };
-
     fetchData();
   }, []);
 
@@ -54,7 +49,7 @@ const Dashboard1 = () => {
         const data = await branch_employee_tax_by_status(branch,selectedMonth,"Submitted");
         setsubmittedData(data);
       } catch (error) {
-        console.log(error);
+       // console.log(error);
       }
     };
     fetchData();
@@ -71,12 +66,7 @@ const Dashboard1 = () => {
 
   const handleMonthChange = async(event) => {
     setSelectedMonth(event.target.value);
-    const data = await get_Submit_branches(selectedMonth);
-    setData(data);
-    const submitedTaxData = await branch_employee_tax_by_status(branch,selectedMonth,"Submitted");
-    setsubmittedData(submitedTaxData);
-
-  };
+      };
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -93,16 +83,16 @@ const Dashboard1 = () => {
     }));
     return months;
   };
-  // const handleSearch = async () => {
-  //   try {
-  //     const data = await get_Submit_branches(selectedMonth);
-  //     setData(data);
-  //     const submitedTaxData = await branch_employee_tax_by_status(branch,selectedMonth,"Submitted");
-  //     setsubmittedData(submitedTaxData);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+  const handleSearch = async () => {
+    try {
+      const data = await get_Submit_branches(selectedMonth);
+      setData(data);
+      const submitedTaxData = await branch_employee_tax_by_status(branch,selectedMonth,"Submitted");
+      setsubmittedData(submitedTaxData);
+    } catch (error) {
+      //console.log(error);
+    }
+  };
   return (
     <Box>
       <Box display="flex" justifyContent="flex-start" alignItems="center">
@@ -123,9 +113,9 @@ const Dashboard1 = () => {
         </Box>
          
         <Box ml={2}>
-          {/* <Button onClick={handleSearch} variant="contained" color="success">
+          <Button onClick={handleSearch} variant="contained" color="success">
             Search
-          </Button> */}
+          </Button>
         </Box>
       </Box>
       <Box display="flex" flexDirection="column" justifyContent="left" alignItems="left">
@@ -138,12 +128,13 @@ const Dashboard1 = () => {
           width: "600px",
         }}
       >
+       
+        <Table>
         <caption>
     Number of Branches Submitted for the month  <strong style={{ color: "red",fontSize:20 }}>
      {selectedMonth} is   {data.length}
     </strong>
   </caption>
-        <Table aria-label="simple table">
           <TableHead>
             <TableRow>
               <TableCell>
@@ -198,12 +189,13 @@ const Dashboard1 = () => {
           width: "600px",
         }}
       >
+       
+        <Table>
         <caption>
     Number of Employes Tax Submitted for the month  <strong style={{ color: "red",fontSize:20 }}>
      {selectedMonth} is   {submittedData.length}
     </strong>
   </caption>
-        <Table aria-label="simple table">
           <TableHead>
             <TableRow>
               <TableCell>

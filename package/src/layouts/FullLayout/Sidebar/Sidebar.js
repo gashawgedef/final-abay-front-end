@@ -1,8 +1,6 @@
 import React from "react";
 import { useLocation } from "react-router";
 import { Link, NavLink } from "react-router-dom";
-import { blue } from "@mui/material/colors";
-
 import {
   Box,
   Drawer,
@@ -16,8 +14,6 @@ import { SidebarWidth } from "../../../assets/global/Theme-variable";
 import LogoIcon from "../Logo/LogoIcon";
 import { HQMenuitems, BRMenuitems } from "./data";
 import { currentUser } from "../../../utils/tokenUtils";
-// import Buynow from "./Buynow";
-
 const Sidebar = (props) => {
   const [open, setOpen] = React.useState(true);
   const { pathname } = useLocation();
