@@ -20,7 +20,6 @@ import TimelineDot from "@mui/lab/TimelineDot";
 import TimelineOppositeContent from "@mui/lab/TimelineOppositeContent";
 
 const options = ["Action", "Another Action", "Something else here"];
-
 const activities = [
   {
     time: "09.50",

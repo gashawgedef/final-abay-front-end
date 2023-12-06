@@ -47,7 +47,6 @@ const TaxList = () => {
     const month = stateData.month;
     currentMonth = `${month}/${year}`;
   }
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -82,14 +81,10 @@ const TaxList = () => {
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
-
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-
-
-
   const handleMonthChange = (event) => {
     setSelectedMonth(event.target.value);
   };

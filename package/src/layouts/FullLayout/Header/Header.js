@@ -1,17 +1,13 @@
 import React from "react";
 //import { Link } from 'react-router-dom';
 
-import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
-import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
-import AddToPhotosOutlinedIcon from '@mui/icons-material/AddToPhotosOutlined';
-import PersonAddOutlinedIcon from '@mui/icons-material/PersonAddOutlined';
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
-import {
-
-  Typography
-
-} from "@mui/material";
+import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
+import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
+// import AddToPhotosOutlinedIcon from "@mui/icons-material/AddToPhotosOutlined";
+import PersonAddOutlinedIcon from "@mui/icons-material/PersonAddOutlined";
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
+import { Typography } from "@mui/material";
 
 import {
   AppBar,
@@ -63,8 +59,11 @@ const Header = (props) => {
 
   return (
     <AppBar sx={props.sx} elevation={0} className={props.customClass}>
-      <Toolbar sx={{ background: "#448aff" }}>
-        <Typography variant="h1" style={{ textAlign: "center", fontWeight: "bold", color: "white" }}>
+      <Toolbar sx={{ background: "#4747d1" }}>
+        <Typography
+          variant="h1"
+          style={{ textAlign: "center", fontWeight: "bold", color: "white" }}
+        >
           Abay Bank Employee Tax Record System
         </Typography>
         <IconButton
@@ -166,7 +165,7 @@ const Header = (props) => {
         >
           <NotificationsNoneOutlinedIcon width="20" height="20" />
         </IconButton>
-        <Menu
+        {/* <Menu
           id="notification-menu"
           anchorEl={anchorEl}
           keepMounted
@@ -185,7 +184,7 @@ const Header = (props) => {
           <MenuItem onClick={handleClose}>Action</MenuItem>
           <MenuItem onClick={handleClose}>Action Else</MenuItem>
           <MenuItem onClick={handleClose}>Another Action</MenuItem>
-        </Menu>
+        </Menu> */}
         {/* ------------------------------------------- */}
         {/* End Notifications Dropdown */}
         {/* ------------------------------------------- */}
@@ -246,16 +245,16 @@ const Header = (props) => {
                 height: "35px",
               }}
             />
-            <Box
+            {/* <Box
               sx={{
                 ml: 2,
               }}
             >
               My account
-            </Box>
+            </Box> */}
           </MenuItem>
           <Divider />
-          <MenuItem onClick={handleClose4}>
+          {/* <MenuItem onClick={handleClose4}>
             <ListItemIcon>
               <PersonAddOutlinedIcon fontSize="small" />
             </ListItemIcon>
@@ -266,7 +265,7 @@ const Header = (props) => {
               <SettingsOutlinedIcon fontSize="small" />
             </ListItemIcon>
             Settings
-          </MenuItem>
+          </MenuItem> */}
           <MenuItem onClick={handleClose4}>
             <ListItemIcon>
               <LogoutOutlinedIcon fontSize="small" />
