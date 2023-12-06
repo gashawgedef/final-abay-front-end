@@ -11,9 +11,12 @@ import {
   Paper,
   IconButton,
   TextField,
+
 } from "@mui/material";
+import Alert from '@mui/lab/Alert';
 import { Edit,Save} from "@mui/icons-material";
 import { getPrice, updatePrice } from "../../services/gaspriceapi";
+import toast from "react-hot-toast";
 const PriceListTable = () => {
   const [data, setData] = useState([]);
   const [page, setPage] = useState(0);
@@ -46,11 +49,11 @@ const PriceListTable = () => {
       }
       await updatePrice(data); 
       setEditIndex(-1); 
-      alert("You have successfully updated");
-      window.location.reload();
+      toast.error("You have successfully updated");
+      const newdata = await getPrice();
+        setData(newdata);
     } catch (error) {
       alert("Error Check Your data");
-      // Handle error if needed
     }
   };
 
@@ -137,7 +140,7 @@ const PriceListTable = () => {
                   {editIndex === price.id ? (
                     <IconButton
                       onClick={() => handleSave(price)}
-                      aria-label="Save"
+                      aria-label=" Save"
                       color="primary"
                     >
                       <Save />
