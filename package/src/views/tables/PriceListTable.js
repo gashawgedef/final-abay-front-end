@@ -13,49 +13,68 @@ import {
   TextField,
 
 } from "@mui/material";
-import Alert from '@mui/lab/Alert';
 import { Edit,Save} from "@mui/icons-material";
 import { getPrice, updatePrice } from "../../services/gaspriceapi";
 import toast from "react-hot-toast";
+import { useQuery,useQueryClient  } from "@tanstack/react-query";
+
+
 const PriceListTable = () => {
-  const [data, setData] = useState([]);
+  // const [data, setData] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [editIndex, setEditIndex] = useState(-1);
   const [editedPrice, setEditedPrice] = useState("");
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getPrice();
-        setData(data);
-      } catch (error) {
-        alert("Error Check Your data");
-      }
-    };
-    fetchData();
-  }, []);
+  const queryClient = useQueryClient();
+
+  const {isLoading,data,error}=useQuery({
+    queryKey:['price'],
+    queryFn:getPrice
+  })
+
+  if(isLoading){
+    return <p>loading ...</p>
+  }
+  if (error){
+    return <div>No data Found</div>
+  }
+
+  // console.log("data:",data)
+  // const getpriceData=async()=>{
+  //   const data = await getPrice();
+  //   setData(data);
+  // }
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       await getpriceData();
+  //     } catch (error) {
+  //       alert("Error Check Your data");
+  //     }
+  //   };
+  //   fetchData();
+  // }, []);
 
   const handleEdit = (row) => {
     setEditIndex(row.id);  
     setEditedPrice(row.price); 
   };
 
-  const handleSave = async (row) => {
-    try {
-      const data={
-        "id":row.id ,
-        "price":editedPrice
-      }
-      await updatePrice(data); 
-      setEditIndex(-1); 
-      toast.error("You have successfully updated");
-      const newdata = await getPrice();
-        setData(newdata);
-    } catch (error) {
-      alert("Error Check Your data");
-    }
-  };
+const handleSave = async (row) => {
+  try {
+    const data = {
+      "id": row.id,
+      "price": editedPrice
+    };
+    await updatePrice(data);
+    setEditIndex(-1);
+    toast.success("You have successfully updated");
+    queryClient.invalidateQueries(['price']); 
+  } catch (error) {
+    toast.error("Error: Check Your data");
+  }
+};
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -118,7 +137,8 @@ const PriceListTable = () => {
                       value={editedPrice}
                       onChange={(e) => setEditedPrice(e.target.value)}
                       fullWidth
-                      autoFocus
+                      autoFocus 
+                      sx={{ height: "60px", width: "80px" }}
                     />
                   ) : (
                     <Typography variant="h6">{price.price}</Typography>
