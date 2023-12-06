@@ -13,40 +13,70 @@ import { useLocation } from "react-router-dom";
 import PriceListTable from "../tables/PriceListTable";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
-import {RecordNewPrice} from "../../services/gaspriceapi"
+import { RecordNewPrice } from "../../services/gaspriceapi";
+import { toast } from "react-hot-toast";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
 const PriceTable = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
+  // const [isSaving, setIsSaving] = useState(false);
   const [formData, setFormData] = useState({
     price: "",
     status: true,
   });
+  const queryClient = useQueryClient();
+  const { register, handleSubmit, reset: resetForm } = useForm();
+  const {
+    mutate,
+    isLoading: isSaving,
+    reset: resetMutation,
+  } = useMutation({
+    mutationFn: RecordNewPrice,
+    onSuccess: () => {
+      toast.success("You have successfully registered");
+      setIsModalOpen(false);
+      queryClient.invalidateQueries("price");
+      resetForm();
+      resetMutation();
+    },
+    onError: () => {
+      toast.error("An error occurred while registering");
+    },
+  });
+
+  function onSubmit(data) {
+    mutate(data);
+  }
+
   const handleModalToggle = () => {
     setIsModalOpen(!isModalOpen);
   };
-  const handleFormChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-  const handleSave = async (e) => {
-    e.preventDefault();
-    if (isSaving) {
-      return;
-    }
-    setIsSaving(true); 
-    try {
-      await RecordNewPrice(formData);
-      alert("You have successfully registered");
-      setIsModalOpen(false);
-      window.location.reload();
-    } catch (error) {
-      alert("An error occurred while registering");
-      console.error(error);
-    } finally {
-      setIsSaving(false); 
-    }
-  };
+  
+  // const handleFormChange = (e) => {
+  //   setFormData({ ...formData, [e.target.name]: e.target.value });
+  // };
+
+
+  // const handleSave = async (e) => {
+  //   e.preventDefault();
+  //   if (isSaving) {
+  //     return;
+  //   }
+  //   setIsSaving(true);
+  //   try {
+  //     await RecordNewPrice(formData);
+  //     toast.success("You have successfully registered");
+  //     setIsModalOpen(false);
+  //     // window.location.reload();
+  //   } catch (error) {
+  //     toast.error("An error occurred while registering");
+  //     console.error(error);
+  //   } finally {
+  //     setIsSaving(false);
+  //   }
+  // };
 
   const handleCancel = () => {
     setIsModalOpen(false);
@@ -100,14 +130,13 @@ const PriceTable = () => {
           <Typography variant="h5" component="h2" sx={{ mb: 3 }}>
             Add New Price
           </Typography>
-          <form onSubmit={handleSave}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <Grid container>
               <TextField
                 type="number"
                 label="Price"
                 name="price"
-                value={formData.price}
-                onChange={handleFormChange}
+                {...register("price")}
                 fullWidth
                 margin="normal"
                 required
@@ -117,9 +146,14 @@ const PriceTable = () => {
               <Button onClick={handleCancel} variant="outlined" sx={{ mr: 2 }}>
                 Cancel
               </Button>
-              <Button type="submit" variant="contained" color="success" disabled={isSaving}>
-  {isSaving ? 'Saving...' : 'Save'}
-</Button>
+              <Button
+                type="submit"
+                variant="contained"
+                color="success"
+                disabled={isSaving}
+              >
+                {isSaving ? "Saving..." : "Save"}
+              </Button>
             </Box>
           </form>
         </Box>

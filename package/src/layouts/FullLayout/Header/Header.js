@@ -128,8 +128,8 @@ const Header = (props) => {
             }}
           >
             <Avatar
-              src={userimg}
-              alt={userimg}
+              // src={userimg}
+              // alt={userimg}
               sx={{
                 width: "30px",
                 height: "30px",
