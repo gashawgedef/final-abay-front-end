@@ -38,11 +38,17 @@ export const BRMenuitems = [
     icon: AutoAwesomeMosaicOutlinedIcon,
     href: "/tables/basic-table",
   },
+  
   {
     title: "Tax page",
     icon: DashboardOutlinedIcon,
     href: "/dashboards/tax-list",
- }
+ },
+ {
+  title: "Employee Tin",
+  icon: DashboardOutlinedIcon,
+  href: "/dashboards/tin-list",
+},
 ];
 
 

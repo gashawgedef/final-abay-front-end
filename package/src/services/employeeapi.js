@@ -52,3 +52,20 @@ export const createEmployee = async (employeeData) => {
     throw error;
   }
 };
+
+export const updateTin = async (data) => {
+  const url = `${BASE_URL}/people/tin`;
+  const requestOptions = {
+    method: 'Put',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  };
+  try {
+    const response = await fetch(url, requestOptions);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+
+}

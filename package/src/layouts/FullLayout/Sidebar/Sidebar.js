@@ -39,7 +39,7 @@ const Sidebar = (props) => {
 
   // console.log(user.Group.Employee)
   let Menuitems = BRMenuitems;
-  if (user.branch_type === "HQ") {
+  if (user.branch_type === "BR") {
     Menuitems = HQMenuitems;
   }
 
