@@ -16,8 +16,10 @@ import { Edit,Save} from "@mui/icons-material";
 import { getPrice, updatePrice } from "../../../services/gaspriceapi";
 import { branch_employees,updateTin } from "../../../services/employeeapi";
 import {currentUser} from "../../../utils/tokenUtils";
+import toast from "react-hot-toast";
+import { useQuery,useQueryClient  } from "@tanstack/react-query";
 const EmployeeTin = () => {
-  const [data, setData] = useState([]);
+  // const [data, setData] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [editIndex, setEditIndex] = useState(-1);
@@ -25,17 +27,30 @@ const EmployeeTin = () => {
   const user = currentUser();
   const branch=user.branch_id;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await branch_employees(branch);
-        setData(data);
-      } catch (error) {
-        alert("Error Check Your data");
-      }
-    };
-    fetchData();
-  }, []);
+  const queryClient = useQueryClient();
+  const { isLoading, data:tin, error } = useQuery({ queryKey: ['todos', branch], queryFn: () => branch_employees(branch) });
+  
+  // useQuery(['tin', branch], {
+  //   queryFn: () => branch_employees(branch),
+  // });
+
+  if(isLoading){
+    return <p>Loading ...</p>
+  }
+  if(error){
+    return <p>Error</p>
+  }
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const data = await branch_employees(branch);
+  //       setData(data);
+  //     } catch (error) {
+  //       alert("Error Check Your data");
+  //     }
+  //   };
+  //   fetchData();
+  // }, []);
 
   const handleEdit = (row) => {
     setEditIndex(row.Employee.User.id); 
@@ -50,10 +65,11 @@ const EmployeeTin = () => {
       }
       await updateTin(data); 
       setEditIndex(-1); 
-      alert("You have successfully updated");
-      window.location.reload();
+      toast.success("You have successfully updated");
+      queryClient.invalidateQueries('tin')
+      // window.location.reload();
     } catch (error) {
-      alert("Error Check Your data");
+      toast.error("Error Check Your data");
       // Handle error if needed
     }
   };
@@ -67,7 +83,7 @@ const EmployeeTin = () => {
     setPage(0);
   };
   
-  const count = data.length;
+  const count = tin.length;
   return (
     <TableContainer component={Paper}>
       <Table
@@ -108,7 +124,7 @@ const EmployeeTin = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data
+          {tin
             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             .map((emp, index) => (
               <TableRow key={emp.id}>

@@ -24,6 +24,7 @@ import {
 import { useLocation } from "react-router-dom";
 import { bulkTaxUpdateInfo,updateTaxinfo,branch_employees_tax, month_list,branch_employee_tax_by_status} from "../../../services/taxapi";
 import { currentUser } from "../../../utils/tokenUtils";
+import toast from 'react-hot-toast'
 
 const TaxList = () => {
   const user = currentUser();
@@ -127,15 +128,15 @@ const TaxList = () => {
     };
     const isEmpty = Object.keys(editedRowData).length === 1; // Check if only the 'id' property exists
     if (isEmpty) {
-      alert("Please Edit the field you want to Update first");
+      toast.error("Please Edit the field you want to Update first");
       return 0;
     }
     try {
       await updateTaxinfo(editedRowData);
-      alert("You have successfully updated");
+      toast.success("You have successfully updated");
       window.location.reload();
     } catch (error) {
-      alert("Error Check Your data");
+      toast.error("Error Check Your data");
       //console.error("Error updating employee data:", error);
       // Handle error here
     }
@@ -159,7 +160,7 @@ const TaxList = () => {
 
   const  submitToHeadoffice  = () => {
     if(getDraftData.length===0){
-      alert("You either submit data befor or you try empty data");
+      toast.error("You either submit data befor or you try empty data");
       return 0;
       }
       openConfirmationDialog();
@@ -167,7 +168,7 @@ const TaxList = () => {
   }
  const handleConfirmSave =async()=>{
     if(getDraftData.length===0){
-      alert("You either submit data befor or you try empty data");
+      toast.error("You either submit data befor or you try empty data");
       return 0;
       }
     const newData = getDraftData.map((data) => ({
@@ -177,11 +178,11 @@ const TaxList = () => {
 
     try {
       await bulkTaxUpdateInfo(newData);
-      alert("You have successfully submitte the data");
+      toast.success("You have successfully submitte the data");
       closeConfirmationDialog();
       window.location.reload();
     } catch (error) {
-      alert("Error Check Your data");
+      toast.error("Error Check Your data");
       //console.error("Error updating employee data:", error);
       // Handle error here
     }
