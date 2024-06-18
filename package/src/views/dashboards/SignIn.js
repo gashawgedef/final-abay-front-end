@@ -26,7 +26,7 @@ export default function SignIn() {
     } else {
       try {
         setIsLoading(true);
-        const response = await axios.post("http://10.1.50.152:8080/api/login", {
+        const response = await axios.post("http://10.1.50.108:8080/api/login", {
           username,
           password,
         });
