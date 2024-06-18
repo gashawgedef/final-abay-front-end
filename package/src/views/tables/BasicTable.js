@@ -47,6 +47,20 @@ const BasicTable = () => {
      }
   };
 
+  const handleAddExcel = async () => {
+    const data = {
+      year: selectedYear,
+      month: selectedMonth,
+    };
+    const month=`${selectedMonth}/${selectedYear}`;
+    const record = await is_branch_employees_tax_exist(branch,month);
+     if(record==0){
+     navigate("/tables/add-benefit", { state: data });
+     }
+     else{
+      alert("You registered this month data befor please check your selection");
+     }
+  };
   const handleYearChange = (event) => {
     setSelectedYear(event.target.value);
   };
@@ -132,7 +146,10 @@ const BasicTable = () => {
     Cancel
   </Button>
   <Button onClick={handleAddBenefit} variant="contained" color="success" disabled={isButtonDisabled}>
-    Open
+   From ERP
+  </Button>
+  <Button onClick={handleAddExcel} variant="contained" color="success" disabled={isButtonDisabled}>
+   From Excel
   </Button>
 </DialogActions>
       </Dialog>

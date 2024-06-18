@@ -1,4 +1,4 @@
-const BASE_URL = 'http://10.1.50.152:8080';
+import{BASE_URL} from "../utils/constants"
 export const branch_employees_tax = async(branch,month) => {
     const url = `${BASE_URL}/people/branch/tax?branch=${encodeURIComponent(branch)}&month=${encodeURIComponent(month)}`;
     try {

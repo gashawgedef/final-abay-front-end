@@ -1,4 +1,4 @@
-const BASE_URL = 'http://10.1.50.152:8080';
+import{BASE_URL} from "../utils/constants"
 export const ERP_Branch_List = async() => {
     const url = `${BASE_URL}/branch`;
     try {

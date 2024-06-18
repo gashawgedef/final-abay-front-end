@@ -1,4 +1,4 @@
-const BASE_URL = 'http://10.1.50.152:8080';
+import{BASE_URL} from "../utils/constants"
 export const one_employees = async (id) => {
   const url = `${BASE_URL}/people/one/?id=${encodeURIComponent(id)}`;
   try {
