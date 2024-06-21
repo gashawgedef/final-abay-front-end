@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import numeral from "numeral";
+import { calculateTax, calculateTotalIncome,calculateNetIncome } from "../../../utils/calculator"
 import {
   Box,
   Button,
@@ -176,6 +177,7 @@ const TaxList = () => {
       status: "Submitted"
     }));
 
+    
     try {
       await bulkTaxUpdateInfo(newData);
       toast.success("You have successfully submitte the data");
@@ -188,6 +190,7 @@ const TaxList = () => {
     }
   }
 
+  console.log(data);
   return (
     <Box>
       <Box display="flex" justifyContent="flex-end" alignItems="center">
@@ -373,7 +376,6 @@ const TaxList = () => {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-
       <Button variant="contained"
             onClick={() =>submitToHeadoffice()}
             color="primary">
@@ -381,7 +383,7 @@ const TaxList = () => {
           </Button>
 
 
-          <Dialog open={isConfirmationOpen} onClose={closeConfirmationDialog}>
+          {/* <Dialog open={isConfirmationOpen} onClose={closeConfirmationDialog}>
         <DialogTitle>Confirm Save</DialogTitle>
         <DialogContent>
           Are you sure you want to submitte the employee data?
@@ -394,7 +396,84 @@ const TaxList = () => {
             Save
           </Button>
         </DialogActions>
+      </Dialog> */}
+
+
+      <Dialog open={isConfirmationOpen} onClose={closeConfirmationDialog}>
+        <DialogTitle>Confirm Save</DialogTitle>
+        <DialogContent>
+        <TableContainer component={Paper}>
+        <Table
+          aria-label="simple table"
+          sx={{
+            mt: 3,
+            whiteSpace: "nowrap"
+          }}
+        >
+          <TableHead>
+            <TableRow>
+              <TableCell>
+                <Typography color="textSecondary" variant="h6">
+                  #
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <Typography align="left" color="textSecondary" variant="h6">
+                  Employee Name
+                </Typography>
+              </TableCell>
+
+              <TableCell>
+                <Typography color="textSecondary" variant="h6">Totalsum</Typography>
+              </TableCell>
+              <TableCell>
+                <Typography color="textSecondary" variant="h6">Tax</Typography>
+              </TableCell>
+              <TableCell>
+                <Typography color="textSecondary" variant="h6">
+                  Net Pay
+                </Typography>
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+          {data.map((row, index) => (
+    <TableRow key={row.id}>
+      <TableCell>
+        <Typography>{index + 1}</Typography>
+      </TableCell>
+      <TableCell>
+        <Typography align="left">{row.fullName}</Typography>
+        S: {row.salary}  T: {row.transport} H: {row.house} B: {row.benefit}
+      </TableCell>
+
+      <TableCell>
+      <Typography>{calculateTotalIncome(row.salary,row.house,row.transport,row.benefit)}</Typography>
+      </TableCell>
+      
+      <TableCell>
+      <Typography>{calculateTax(calculateTotalIncome(row.salary,row.house,row.transport,row.benefit))}</Typography>
+      </TableCell>
+      <TableCell>
+      <Typography>{calculateNetIncome(row.salary,row.house,row.transport,row.benefit)}</Typography>
+      </TableCell>
+      </TableRow>
+    ))}
+</TableBody>
+        </Table>
+      </TableContainer>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeConfirmationDialog} color="error">
+            Cancel
+          </Button>
+          <Button onClick={handleConfirmSave} color="success">
+            Save
+          </Button>
+        </DialogActions>
       </Dialog>
+
+
     </Box>
   );
 };

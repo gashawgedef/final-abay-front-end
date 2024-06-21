@@ -16,6 +16,7 @@ import ExTable from "../dashboards/dashboard1-components/ExTable";
 import AddIcon from "@mui/icons-material/Add";
 import {currentUser} from "../../utils/tokenUtils";
 import { is_branch_employees_tax_exist } from "../../services/taxapi";
+import toast from "react-hot-toast";
 const BasicTable = () => {
   const user = currentUser();
   const navigate = useNavigate();
@@ -39,11 +40,13 @@ const BasicTable = () => {
     };
     const month=`${selectedMonth}/${selectedYear}`;
     const record = await is_branch_employees_tax_exist(branch,month);
+    console.log(record);
+    
      if(record==0){
      navigate("/tables/add-benefit", { state: data });
      }
      else{
-      alert("You registered this month data befor please check your selection");
+      toast.error("You registered this month data befor please check your selection");
      }
   };
 
@@ -54,11 +57,12 @@ const BasicTable = () => {
     };
     const month=`${selectedMonth}/${selectedYear}`;
     const record = await is_branch_employees_tax_exist(branch,month);
+    console.log("recorddddddddddddddddddddddd"+record)
      if(record==0){
-     navigate("/tables/add-benefit", { state: data });
+     navigate("/tables/AddExcel", { state: data });
      }
      else{
-      alert("You registered this month data befor please check your selection");
+      toast.error("You registered this month data befor please check your selection");
      }
   };
   const handleYearChange = (event) => {
@@ -82,7 +86,7 @@ const BasicTable = () => {
   };
 
   const isButtonDisabled = selectedYear === "" || selectedMonth === "";
-
+  
   return (
     <Box>
       <CardContent>
@@ -148,7 +152,7 @@ const BasicTable = () => {
   <Button onClick={handleAddBenefit} variant="contained" color="success" disabled={isButtonDisabled}>
    From ERP
   </Button>
-  <Button onClick={handleAddExcel} variant="contained" color="success" disabled={isButtonDisabled}>
+  <Button onClick={handleAddExcel} variant="contained" color="primary" disabled={isButtonDisabled}>
    From Excel
   </Button>
 </DialogActions>

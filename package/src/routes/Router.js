@@ -1,7 +1,8 @@
 import { lazy } from "react";
 import { Navigate,Redirect } from "react-router-dom";
 import PriceTable from "../views/tables/PriceTable.js";
- import AddBenefit from "../views/dashboards/dashboard1-components/AddBenfit.js"
+ import AddBenefit from "../views/dashboards/dashboard1-components/AddBenfit.js";
+ import AddExcel from "../views/dashboards/dashboard1-components/AddExcel.js";
 import ProtectedRoute from "../views/ProtectedRoute.js";
 
 /****Layouts*****/
@@ -43,6 +44,7 @@ const ThemeRoutes = [
       { path: "tables/basic-table", element: <BasicTable /> },
       { path: "tables/price-table", element: <PriceTable /> },
       { path: "tables/add-benefit", element: <AddBenefit /> },
+      { path: "tables/AddExcel", element: <AddExcel /> },
       { path: "/form-layouts/form-layouts", element: <FormLayouts /> },
       { path: "/form-elements/autocomplete", element: <ExAutoComplete /> },
       { path: "/form-elements/button", element: <ExButton /> },

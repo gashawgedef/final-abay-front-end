@@ -9,3 +9,14 @@ export const ERP_Branch_List = async() => {
       throw error;
     }
   };
+  
+export const Addis_Branch_List = async() => {
+    const url = `${BASE_URL}/branch/addis/region`;
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  };

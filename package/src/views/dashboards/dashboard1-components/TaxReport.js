@@ -22,7 +22,7 @@ import {
 } from "@mui/material";
 import { useLocation } from "react-router-dom";
 import { get_branch_tax_report, month_list } from "../../../services/taxapi";
-import { ERP_Branch_List } from "../../../services/erpBranchapi";
+import { ERP_Branch_List, Addis_Branch_List} from "../../../services/erpBranchapi";
 import { currentUser } from "../../../utils/tokenUtils";
 
 const TaxReport = () => {
@@ -99,13 +99,36 @@ const TaxReport = () => {
   };
 
   const BranchOptionsList = async () => {
-    const data = await ERP_Branch_List();
+    const data = await  Addis_Branch_List();
     const branches = data.map((branch) => ({
       id: branch.id,
       name: branch.name,
     }));
     return branches;
   };
+
+  // const BranchOptionsList = async () => {
+  //   try {
+  //     const data = await ERP_Branch_List(); // Fetch the branch list
+  //     const branches = data.map((branch) => ({
+  //       id: branch.id,
+  //       name: branch.name,
+  //     }));
+  
+  //     // Add the "All" option at the beginning of the list
+  //     branches.unshift({
+  //       id: 'all', // A unique identifier for the "All" option
+  //       name: 'All Branches', // Display name for the "All" option
+  //     });
+  
+  //     return branches;
+  //   } catch (error) {
+  //     console.error('Error fetching branch list:', error);
+  //     throw error;
+  //   }
+  // };
+
+
 
   const monthOptionsList = async () => {
     const data = await month_list();

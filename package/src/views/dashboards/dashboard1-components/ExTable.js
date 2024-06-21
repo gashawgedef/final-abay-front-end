@@ -28,11 +28,13 @@ import {currentUser} from "../../../utils/tokenUtils"
       try {
         const employees = await branch_employees_salary(branch,currentMonth, currentYear);
         setData(employees);
+        console.log(employees)
       } catch (error) {
         console.log(error);
       }
     };
 
+    
     fetchData();
   }, []);
 
