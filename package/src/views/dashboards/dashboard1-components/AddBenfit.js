@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+
 import {
   CardContent,
   Box,
@@ -20,6 +21,7 @@ import {
 import { currentUser } from "../../../utils/tokenUtils";
 import { branch_employees_salary } from "../../../services/employeeapi";
 import { bulkTaxRecord } from "../../../services/taxapi";
+import toast from "react-hot-toast";
 
 const AddBenefit = () => {
   const user = currentUser();
@@ -94,10 +96,12 @@ const AddBenefit = () => {
       taxRecords.push(emp);
     });
    
+     console.log(taxRecords);
+
      bulkTaxRecord(taxRecords)
       .then((registerData) => {
-        closeConfirmationDialog();
-      alert("You have sucussfully registered");
+        //closeConfirmationDialog();
+      toast.success("You have sucussfully registered");
        navigate("/dashboards/tax-list", { state: stateData });
       })
       .catch((error) => {

@@ -69,7 +69,7 @@ export default function SignIn() {
         </Box>
         <Divider sx={{ my: 2 }} />
           <Typography component="h1" variant="h2" sx={{fontFamily:"sans-serif",fontWeight:'600',fontSize:'15px'}}> 
-           Please Sign In
+           Use ERP username and password for login
           </Typography>
           <Divider sx={{ my: 2 }} />
 

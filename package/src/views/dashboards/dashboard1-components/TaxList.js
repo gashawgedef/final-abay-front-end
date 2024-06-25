@@ -191,6 +191,17 @@ const TaxList = () => {
   }
 
   console.log(data);
+
+
+  const totalTax = (data) => {
+    const totalTaxAmount = data.map(item => {
+        const totalIncome = calculateTotalIncome(item.salary, item.house, item.transport, item.benefit);
+        const tax = calculateTax(totalIncome);
+        return Number(tax) || 0;
+    }).reduce((acc, curr) => acc + curr, 0);
+
+    return totalTaxAmount; // Ensuring totalTaxAmount is a number
+};
   return (
     <Box>
       <Box display="flex" justifyContent="flex-end" alignItems="center">
@@ -462,6 +473,11 @@ const TaxList = () => {
 </TableBody>
         </Table>
       </TableContainer>
+        <Box mt={2}>
+            <Typography variant="h6">
+              Total Tax:{totalTax(data)}
+            </Typography>
+          </Box> 
         </DialogContent>
         <DialogActions>
           <Button onClick={closeConfirmationDialog} color="error">

@@ -186,7 +186,7 @@ const Dashboard1 = () => {
                           <TableCell>
                             <Typography align="left">{row.name}</Typography>
                           </TableCell>
-                          <TableCell>{row.id}</TableCell>
+                          <TableCell>{row.fc_code}</TableCell>
                           <TableCell style={{ color: isSubmitted ? 'green' : 'red' }}>
                             {isSubmitted ? "submitted" : "not Submitted"}
                           </TableCell>

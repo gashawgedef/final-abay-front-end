@@ -1,4 +1,5 @@
 import{BASE_URL} from "../utils/constants"
+
 export const branch_employees_tax = async(branch,month) => {
     const url = `${BASE_URL}/people/branch/tax?branch=${encodeURIComponent(branch)}&month=${encodeURIComponent(month)}`;
     try {
@@ -9,7 +10,6 @@ export const branch_employees_tax = async(branch,month) => {
       throw error;
     }
   };
-
 export const get_branch_tax_report = async(branch,month) => {
     const url = `${BASE_URL}/people/taxreport/branch?branch=${encodeURIComponent(branch)}&month=${encodeURIComponent(month)}`;
     try {
@@ -20,7 +20,6 @@ export const get_branch_tax_report = async(branch,month) => {
       throw error;
     }
   };
-
   export const get_Submit_branches = async(month) => {
     const url = `${BASE_URL}/people/gettax/branch/submited?month=${encodeURIComponent(month)}`;
     try {
@@ -32,7 +31,6 @@ export const get_branch_tax_report = async(branch,month) => {
     }
   };
 
-
   export const branch_employee_tax_by_status = async(branch,month,status) => {
     const url = `${BASE_URL}/people/taxrecord/branch/status?branch=${encodeURIComponent(branch)}&month=${encodeURIComponent(month)}&status=${encodeURIComponent(status)}`;
     try {
@@ -43,7 +41,6 @@ export const get_branch_tax_report = async(branch,month) => {
       throw error;
     }
   };
-
   export const employee_tax_by_status = async(month,status) => {
     const url = `${BASE_URL}/people/taxrecord/status?month=${encodeURIComponent(month)}&status=${encodeURIComponent(status)}`;
     try {
@@ -54,7 +51,6 @@ export const get_branch_tax_report = async(branch,month) => {
       throw error;
     }
   };
-
 
   export const is_branch_employees_tax_exist = async(branch,month) => {
     const url = `${BASE_URL}/people/check/record?branch=${encodeURIComponent(branch)}&month=${encodeURIComponent(month)}`;
@@ -109,7 +105,6 @@ export const get_branch_tax_report = async(branch,month) => {
       throw error;
     }
   }
-
   export const bulkTaxUpdateInfo = async (data) => {
     const url =`${BASE_URL}/people/bulktaxupdate`;
     const requestOptions = {
