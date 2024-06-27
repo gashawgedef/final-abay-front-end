@@ -1,14 +1,12 @@
 // calculate-Tax.js
 
 /**
- * Calculate the tax amount based on income brackets.
+ * 
  * @param {number} income - The total income for which tax is to be calculated.
  * @returns {string} - The calculated tax amount formatted to two decimal places.
  */
 const calculateTax = (income) => {
     let taxAmount;
-  
-    // Calculate tax based on income brackets
     switch (true) {
       case income <= 600:
         taxAmount = 0;
@@ -32,7 +30,6 @@ const calculateTax = (income) => {
         taxAmount = income * 0.35 - 1500;
     }
   
-    // Ensure taxAmount is a positive number and format to two decimal places
     return Math.max(taxAmount, 0).toFixed(2);
   };
   
@@ -60,18 +57,10 @@ const calculateTax = (income) => {
   const calculateNetIncome = (salary, house, transport, benefit) => {
     // Adjust transport if it exceeds 600
     let adjustedTransport = transport > 600 ? transport - 600 : 0;
-  
-    // Calculate total income
     const total = adjustedTransport + salary + house + benefit;
   const tax=calculateTax(total);
-
     // Ensure total is a non-negative number
     return Math.max(total-tax, 0);
   };
-  
-
-
-
-  // Export the functions for use in other modules
   module.exports = { calculateTax, calculateTotalIncome,calculateNetIncome };
   

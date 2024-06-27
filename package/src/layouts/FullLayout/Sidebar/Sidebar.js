@@ -29,17 +29,8 @@ const Sidebar = (props) => {
     }
   };
   const user = currentUser() || { branch_type: '' }; 
-  // if (user.Group && user.Group['Employee']) {
-  //   console.log("User is an Employee");
-  // }
-  // if (user.Group && 'Super Administrator' in user.Group) {
-  //   console.log('User is a Super Administrator');
-  // }
-
-
-  // console.log(user.Group.Employee)
   let Menuitems = BRMenuitems;
-  if (user.branch_type ==="BR") {
+  if (user.branch_type ==="HQ") {
     Menuitems = HQMenuitems;
   }
 

@@ -29,7 +29,7 @@ root.render(
               border: "1px solid #2e7d32",
               borderBottom: "3px solid #2e7d32",
               borderRadius: "4px",
-            }, // Set the border styles for success toast
+            }, 
           },
           error: {
             duration: 3000,
@@ -37,7 +37,7 @@ root.render(
               border: "1px solid #b71c1c",
               borderBottom: "3px solid #b71c1c",
               borderRadius: "4px",
-            }, // Set the border styles for error toast
+            }, 
           },
           style: {
             fontSize: "16px",

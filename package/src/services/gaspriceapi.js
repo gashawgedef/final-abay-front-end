@@ -25,7 +25,6 @@ export const RecordNewPrice = async (data) => {
     throw error;
   }
 };
-
 export const updatePrice = async (data) => {
   const url = `${BASE_URL}/price`;
   const requestOptions = {

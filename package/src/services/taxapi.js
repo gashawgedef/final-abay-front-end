@@ -11,7 +11,11 @@ export const branch_employees_tax = async(branch,month) => {
     }
   };
 export const get_branch_tax_report = async(branch,month) => {
-    const url = `${BASE_URL}/people/taxreport/branch?branch=${encodeURIComponent(branch)}&month=${encodeURIComponent(month)}`;
+  let url = `${BASE_URL}/people/taxreport/branch?branch=${encodeURIComponent(branch)}&month=${encodeURIComponent(month)}`;
+  if(branch==null){
+     url = `${BASE_URL}/people/taxreport/branch?month=${encodeURIComponent(month)}`;
+  }
+    
     try {
       const response = await fetch(url);
       const data = await response.json();
@@ -30,7 +34,6 @@ export const get_branch_tax_report = async(branch,month) => {
       throw error;
     }
   };
-
   export const branch_employee_tax_by_status = async(branch,month,status) => {
     const url = `${BASE_URL}/people/taxrecord/branch/status?branch=${encodeURIComponent(branch)}&month=${encodeURIComponent(month)}&status=${encodeURIComponent(status)}`;
     try {
@@ -51,7 +54,6 @@ export const get_branch_tax_report = async(branch,month) => {
       throw error;
     }
   };
-
   export const is_branch_employees_tax_exist = async(branch,month) => {
     const url = `${BASE_URL}/people/check/record?branch=${encodeURIComponent(branch)}&month=${encodeURIComponent(month)}`;
     try {
@@ -89,7 +91,6 @@ export const get_branch_tax_report = async(branch,month) => {
       throw error;
     }
   };
-
   export const updateTaxinfo = async (data) => {
     const url = `${BASE_URL}/people/updatetax`;
     const requestOptions = {

@@ -10,7 +10,6 @@ export const one_employees = async (id) => {
     throw error;
   }
 };
-
 export const branch_employees = async (branch) => {
   const url = `${BASE_URL}/people/employee?branch=${encodeURIComponent(branch)}`;
   try {
@@ -22,7 +21,6 @@ export const branch_employees = async (branch) => {
     throw error;
   }
 };
-
 export const branch_employees_salary = async(branch,month,year) => {
   const url = `${BASE_URL}/people/employeedetails?branch=${encodeURIComponent(branch)}&month=${encodeURIComponent(month)}&year=${encodeURIComponent(year)}`;
   try {
@@ -33,7 +31,6 @@ export const branch_employees_salary = async(branch,month,year) => {
     throw error;
   }
 };
-
 export const createEmployee = async (employeeData) => {
   const url = `${BASE_URL}/people/employee`;
 

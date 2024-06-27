@@ -30,7 +30,6 @@ import { Branch_fc_code } from "../../../services/erpBranchapi";
 
 const TaxList = () => {
   const user = currentUser();
-  const branch = user.branch_id;
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [selectedMonth, setSelectedMonth] = useState("");
@@ -44,7 +43,22 @@ const TaxList = () => {
   const currentmonth = currentDate.getMonth() + 1;
   const currentYear = currentDate.getFullYear();
   let currentMonth = `${currentmonth}/${currentYear}`;
-
+  const[branch,setBranch]=useState(user.branch_id);
+  const[fc_code,setFcCode]=useState(null);
+  useEffect(() => {
+    const fetchFcCode = async () => {
+      try {
+        const fccode = await Branch_fc_code(branch);
+        setFcCode(fccode);
+      } catch (error) {
+        console.error('Error fetching fc_code:', error);
+      }
+    };
+    if (branch) { // Ensure branch is valid before fetching
+      fetchFcCode();
+    }
+  }, [branch]);
+  
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const openConfirmationDialog = () => {
     setIsConfirmationOpen(true);
@@ -52,32 +66,17 @@ const TaxList = () => {
   const closeConfirmationDialog = () => {
     setIsConfirmationOpen(false);
   };
-
   const status="Draft";
   if (stateData !== null) {
     const year = stateData.year;
     const month = stateData.month;
     currentMonth = `${month}/${year}`;
   }
-  const getFc_code=async(branch_id)=>{
-    let fc_code=0;
-    try {
-      const branch = await Branch_fc_code(branch_id);
-      fc_code=branch.fc_code;
-    } catch (error) {
-      console.log(error);
-    }
-
-    return fc_code;
-  }
-
   useEffect(() => {
     const fetchData = async () => {
       try {
-
-        const newBranch = await getFc_code(branch);
-        const data = await branch_employees_tax(newBranch,currentMonth);
-        const draftData=await branch_employee_tax_by_status(newBranch,currentMonth,status);
+        const data = await branch_employees_tax(fc_code,currentMonth);
+        const draftData=await branch_employee_tax_by_status(fc_code,currentMonth,status);
         setData(data);
         setDraftData(draftData);
       } catch (error) {
@@ -120,9 +119,8 @@ const TaxList = () => {
 
   const handleSearch = async () => {
     try {
-      const newBranch = await getFc_code(branch);
-      const data = await branch_employees_tax(newBranch,selectedMonth);
-      const draftData=await branch_employee_tax_by_status(newBranch,selectedMonth,status);
+      const data = await branch_employees_tax(fc_code,selectedMonth);
+      const draftData=await branch_employee_tax_by_status(fc_code,selectedMonth,status);
       setDraftData(draftData);
       setData(data);
     } catch (error) {
@@ -182,7 +180,8 @@ const TaxList = () => {
       openConfirmationDialog();
     
   }
- const handleConfirmSave =async()=>{
+ const handleConfirmSave =async(e)=>{
+  e.preventDefault()
     if(getDraftData.length===0){
       toast.error("You either submit data befor or you try empty data");
       return 0;
@@ -204,6 +203,7 @@ const TaxList = () => {
   }
 
   console.log(data);
+
 
   const totalTax = (data) => {
     const totalTaxAmount = data.map(item => {
@@ -495,13 +495,11 @@ const TaxList = () => {
           <Button onClick={closeConfirmationDialog} color="error">
             Cancel
           </Button>
-          <Button onClick={handleConfirmSave} color="success">
+          <Button onClick={(e) => handleConfirmSave(e)} color="success">
             Save
           </Button>
         </DialogActions>
       </Dialog>
-
-
     </Box>
   );
 };

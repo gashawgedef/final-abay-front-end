@@ -23,7 +23,6 @@ export const calculateTax=(income)=> {
       default:
         taxRate = 0.35;
     }
-  
     taxAmount = income * taxRate;
     return taxAmount;
   }

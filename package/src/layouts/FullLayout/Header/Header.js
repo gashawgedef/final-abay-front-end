@@ -29,6 +29,8 @@ import { currentUser } from "../../../utils/tokenUtils";
 const user = currentUser();
 console.log(user)
 let fullName=`${user.first_name} ${user.middle_name}`
+let position=`${user.position}`
+
 const Header = (props) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -166,6 +168,23 @@ const Header = (props) => {
               }}
             >
              {fullName}
+            </Box>
+            
+          </MenuItem>
+          <MenuItem onClick={handleClose4}>
+            {/* <Avatar
+              sx={{
+                width: "35px",
+                height: "35px",
+              }}
+            /> */}
+            <Box
+              sx={{
+                ml: 2,
+              }}
+            >
+           
+             {position}
             </Box>
           </MenuItem>
           <Divider />

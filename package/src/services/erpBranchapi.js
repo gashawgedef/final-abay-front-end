@@ -20,3 +20,14 @@ export const Addis_Branch_List = async() => {
       throw error;
     }
   };
+
+  export const Branch_fc_code = async(branch) => {
+    const url = `${BASE_URL}/branch/fc-code?branch_id=${branch}`;
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  };

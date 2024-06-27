@@ -20,6 +20,7 @@ import {
 } from "@mui/material";
 import { currentUser } from "../../../utils/tokenUtils";
 import { branch_employees_salary } from "../../../services/employeeapi";
+import { Branch_fc_code } from "../../../services/erpBranchapi";
 import { bulkTaxRecord } from "../../../services/taxapi";
 import toast from "react-hot-toast";
 
@@ -32,8 +33,6 @@ const AddBenefit = () => {
   const month = stateData.month;
   const branch = user.branch_id;
   const userName=user.first_name+" "+user.middle_name;
-  console.log(userName);
-  //const branch=120;
   const currentMonth = `${month}/${year}`;
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const openConfirmationDialog = () => {
@@ -70,79 +69,80 @@ const AddBenefit = () => {
     }
     openConfirmationDialog();
   };
+  const handleConfirmSave = async () => {
+    try {
+      const taxRecords = await Promise.all(employeeData.map(async (employee) => {
+        const newBranch = await getFc_code(employee.branch_id);
+        return {
+          fullName: `${employee.Employee.User.Person.first_name} ${employee.Employee.User.Person.middle_name} ${employee.Employee.User.Person.last_name}`,
+          benefit: employee.benefit,
+          branch: newBranch,
+          grade_id: employee.grade_id,
+          step_id: employee.step_id,
+          house: employee.allowance.house,
+          transport: employee.allowance.transportAllowance,
+          tin: employee.Employee.User.tin_number,
+          month: currentMonth,
+          salary: employee.allowance.salary,
+          gas_price: employee.allowance.price,
+          draftby: userName
+        };
+      }));
+      console.log(taxRecords)
+      bulkTaxRecord(taxRecords)
+          .then((registerData) => {
+          toast.success("You have sucussfully registered");
+           navigate("/dashboards/tax-list", { state: stateData });
+          })
+          .catch((error) => {
+            console.error(error);
+          });
 
-  const handleConfirmSave = () => {
-    const taxRecords = [];
-    employeeData.forEach((employee, index) => {
-      const emp = {
-        fullName:
-          employee.Employee.User.Person.first_name +
-          " " +
-          employee.Employee.User.Person.middle_name +
-          " " +
-          employee.Employee.User.Person.last_name,
-        benefit: employee.benefit,
-        branch: employee.branch_id,
-        grade_id: employee.grade_id,
-        step_id: employee.step_id,
-        house: employee.allowance.house,
-        transport: employee.allowance.transportAllowance,
-        tin: employee.Employee.User.tin_number,
-        month: currentMonth,
-        salary: employee.allowance.salary,
-        gas_price:employee.allowance.price,
-        draftby:userName
-      };
-      taxRecords.push(emp);
-    });
-   
-     console.log(taxRecords);
-
-     bulkTaxRecord(taxRecords)
-      .then((registerData) => {
-        //closeConfirmationDialog();
-      toast.success("You have sucussfully registered");
-       navigate("/dashboards/tax-list", { state: stateData });
-      })
-      .catch((error) => {
-        //alert("You have an error");
-        console.error(error);
-      });
+    } catch (error) {
+      console.error('Error saving tax records:', error);
+    }
   };
-
+  
   const handleBenefitChange = (index, value) => {
     const updatedEmployeeData = [...employeeData];
     updatedEmployeeData[index].benefit = value;
     setEmployeeData(updatedEmployeeData);
   };
-
   const handleTINChange = (index, value) => {
     const updatedEmployeeData = [...employeeData];
     updatedEmployeeData[index].Employee.User.tin_number = value;
     setEmployeeData(updatedEmployeeData);
   };
-
   const handleSalaryChange = (index, value) => {
     const updatedEmployeeData = [...employeeData];
     updatedEmployeeData[index].allowance.salary = value;
     setEmployeeData(updatedEmployeeData);
   };
-
   const handletransportAllowanceChange = (index, value) => {
     const updatedEmployeeData = [...employeeData];
     updatedEmployeeData[index].allowance.transportAllowance = value;
     setEmployeeData(updatedEmployeeData);
   };
-
   const handleHouseChange = (index, value) => {
     const updatedEmployeeData = [...employeeData];
     updatedEmployeeData[index].allowance.house = value;
     setEmployeeData(updatedEmployeeData);
   };
-
   const backToBasic = () => {
     navigate("/tables/basic-table");
   };
+
+  const getFc_code=async(branch_id)=>{
+    let fc_code=0;
+    try {
+      const branch = await Branch_fc_code(branch_id);
+      fc_code=branch.fc_code;
+    } catch (error) {
+      console.log(error);
+    }
+
+    return fc_code;
+  }
   return (
     <Box>
       <CardContent>

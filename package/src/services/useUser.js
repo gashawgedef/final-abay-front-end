@@ -10,8 +10,6 @@ function useUser() {
 		queryKey: ["user"],
 		queryFn: currentUser,
 	});
-	// console.log("user", user);
-	// console.log(user.role);
 	return {
 		isLoading,
 		user,

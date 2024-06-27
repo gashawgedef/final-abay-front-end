@@ -18,17 +18,15 @@ import {
   MenuItem,
   Autocomplete,
   TextField
-
 } from "@mui/material";
 import { useLocation } from "react-router-dom";
 import { get_branch_tax_report, month_list } from "../../../services/taxapi";
-import { ERP_Branch_List, Addis_Branch_List} from "../../../services/erpBranchapi";
+import { ERP_Branch_List, Addis_Branch_List,Branch_fc_code} from "../../../services/erpBranchapi";
 import { currentUser } from "../../../utils/tokenUtils";
 
 const TaxReport = () => {
   const user = currentUser();
   const branch=user.branch_id;
-  //const branch = 120;
   const location = useLocation();
   const stateData = location.state;
   const currentDate = new Date();
@@ -47,20 +45,35 @@ const TaxReport = () => {
   const [branchOptions, setBranchOptions] = useState([]);
   const [monthOptions, setMonthOptions] = useState([]);
   const [data, setData] = useState([]);
+  const[fc_code,setFcCode]=useState(null)
+useEffect(() => {
+  const fetchFcCode = async () => {
+    try {
+      const fccode = await Branch_fc_code(branch);
+      setFcCode(fccode);
+    } catch (error) {
+      console.error('Error fetching fc_code:', error);
+    }
+  };
 
-  useEffect(() => {
-    const fetchData = async () => {
+  if (branch) { // Ensure branch is valid before fetching
+    fetchFcCode();
+  }
+}, [branch]);
+
+useEffect(() => {
+  const fetchData = async () => {
+    if (fc_code && currentMonth) { // Only fetch if both are valid
       try {
-        const data = await get_branch_tax_report(branch,currentMonth);
+        const data = await get_branch_tax_report(fc_code, currentMonth);
         setData(data);
       } catch (error) {
-        console.log(error);
+        console.error('Error fetching branch tax report:', error);
       }
-    };
-
-    fetchData();
-  }, [branch, currentMonth]);
-
+    }
+  };
+  fetchData();
+}, [fc_code, currentMonth]);
   useEffect(() => {
     const fetchBranchOptions = async () => {
       const options = await BranchOptionsList();
@@ -69,7 +82,6 @@ const TaxReport = () => {
 
     fetchBranchOptions();
   }, []);
-
   useEffect(() => {
     const fetchMonthOptions = async () => {
       const options = await monthOptionsList();
@@ -78,18 +90,13 @@ const TaxReport = () => {
 
     fetchMonthOptions();
   }, []);
-
   const handleChangePage = (event,newPage) => {
     setPage(newPage);
   };
-
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-
-
-
   const handleMonthChange = (event) => {
     setSelectedMonth(event.target.value);
   };
@@ -99,28 +106,37 @@ const TaxReport = () => {
   };
 
   // const BranchOptionsList = async () => {
-  //   const data = await  Addis_Branch_List();
-  //   const branches = data.map((branch) => ({
-  //     id: branch.id,
-  //     name: branch.name,
-  //   }));
-  //   return branches;
+  //   try {
+  //     const data = await Addis_Branch_List(); // Fetch the branch list
+  //     const branches = data.map((branch) => ({
+  //       id: branch.fc_code,
+  //       name: branch.name,
+  //     }));
+  //     branches.unshift({
+  //       id: 'all', // A unique identifier for the "All" option
+  //       name: 'All Branches', // Display name for the "All" option
+  //     });
+  //     return branches;
+  //   } catch (error) {
+  //     console.error('Error fetching branch list:', error);
+  //     throw error;
+  //   }
   // };
-
   const BranchOptionsList = async () => {
     try {
       const data = await Addis_Branch_List(); // Fetch the branch list
       const branches = data.map((branch) => ({
-        id: branch.id,
+        id: branch.fc_code,
         name: branch.name,
       }));
-  
-      // Add the "All" option at the beginning of the list
+      branches.unshift({
+        id:'000', 
+        name: 'Head Office', 
+      });
       branches.unshift({
         id: 'all', // A unique identifier for the "All" option
         name: 'All Branches', // Display name for the "All" option
       });
-  
       return branches;
     } catch (error) {
       console.error('Error fetching branch list:', error);
@@ -134,19 +150,21 @@ const TaxReport = () => {
     }));
     return months;
   };
-
   const handleSearch = async () => {
     try {
-      const data = await get_branch_tax_report(selectedBranch.id,selectedMonth);
+      let branch=null;
+   if(selectedBranch.id!='all'){
+     branch=selectedBranch.id;
+    }
+      const data = await get_branch_tax_report(branch,selectedMonth);
       setData(data);
     } catch (error) {
       console.log(error);
     }
   };
-
   const handleExport = () => {
-    const headers = ["Name", "Tin", "House","Transport","Benefit","Sum","Tax","Net Pay"]
-    const newdata=[headers, ...data.map((item) => [item.fullName, item.tin, item.house,item.transport,item.benefit,item.totalSum,item.totalTax,item.netPay])];
+    const headers = ["Name", "Tin","Basic Salary","Transport","Benefit","House","Sum","Tax","Net Pay","Fc_Code","date"]
+    const newdata=[headers, ...data.map((item) => [item.fullName, item.tin, item.salary,item.transport,item.benefit,item.house,item.totalSum,item.totalTax,item.netPay,item.branch,item.month])];
     // Create a new workbook and worksheet
     const workbook = XLSX.utils.book_new();
     const worksheet = XLSX.utils.aoa_to_sheet(newdata);

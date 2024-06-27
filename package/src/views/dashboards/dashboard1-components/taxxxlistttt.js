@@ -26,7 +26,6 @@ import { useLocation } from "react-router-dom";
 import { bulkTaxUpdateInfo,updateTaxinfo,branch_employees_tax, month_list,branch_employee_tax_by_status} from "../../../services/taxapi";
 import { currentUser } from "../../../utils/tokenUtils";
 import toast from 'react-hot-toast'
-import { Branch_fc_code } from "../../../services/erpBranchapi";
 
 const TaxList = () => {
   const user = currentUser();
@@ -59,25 +58,12 @@ const TaxList = () => {
     const month = stateData.month;
     currentMonth = `${month}/${year}`;
   }
-  const getFc_code=async(branch_id)=>{
-    let fc_code=0;
-    try {
-      const branch = await Branch_fc_code(branch_id);
-      fc_code=branch.fc_code;
-    } catch (error) {
-      console.log(error);
-    }
-
-    return fc_code;
-  }
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-
-        const newBranch = await getFc_code(branch);
-        const data = await branch_employees_tax(newBranch,currentMonth);
-        const draftData=await branch_employee_tax_by_status(newBranch,currentMonth,status);
+        const data = await branch_employees_tax(branch,currentMonth);
+        const draftData=await branch_employee_tax_by_status(branch,currentMonth,status);
         setData(data);
         setDraftData(draftData);
       } catch (error) {
@@ -120,15 +106,14 @@ const TaxList = () => {
 
   const handleSearch = async () => {
     try {
-      const newBranch = await getFc_code(branch);
-      const data = await branch_employees_tax(newBranch,selectedMonth);
-      const draftData=await branch_employee_tax_by_status(newBranch,selectedMonth,status);
+      const data = await branch_employees_tax(branch,selectedMonth);
+      const draftData=await branch_employee_tax_by_status(branch,selectedMonth,status);
       setDraftData(draftData);
       setData(data);
     } catch (error) {
       console.log(error);
     }
-  };  
+  };
 
   const handleEdit = (id) => {
     setEditedData((prevState) => ({
@@ -191,6 +176,8 @@ const TaxList = () => {
       id: data.id,
       status: "Submitted"
     }));
+
+    
     try {
       await bulkTaxUpdateInfo(newData);
       toast.success("You have successfully submitte the data");
@@ -204,16 +191,6 @@ const TaxList = () => {
   }
 
   console.log(data);
-
-  const totalTax = (data) => {
-    const totalTaxAmount = data.map(item => {
-        const totalIncome = calculateTotalIncome(item.salary, item.house, item.transport, item.benefit);
-        const tax = calculateTax(totalIncome);
-        return Number(tax) || 0;
-    }).reduce((acc, curr) => acc + curr, 0);
-
-    return totalTaxAmount; // Ensuring totalTaxAmount is a number
-};
   return (
     <Box>
       <Box display="flex" justifyContent="flex-end" alignItems="center">
@@ -485,11 +462,7 @@ const TaxList = () => {
 </TableBody>
         </Table>
       </TableContainer>
-        <Box mt={2}>
-            <Typography variant="h6">
-              Total Tax:{totalTax(data)}
-            </Typography>
-          </Box> 
+
         </DialogContent>
         <DialogActions>
           <Button onClick={closeConfirmationDialog} color="error">
@@ -498,7 +471,9 @@ const TaxList = () => {
           <Button onClick={handleConfirmSave} color="success">
             Save
           </Button>
+         
         </DialogActions>
+        
       </Dialog>
 
 

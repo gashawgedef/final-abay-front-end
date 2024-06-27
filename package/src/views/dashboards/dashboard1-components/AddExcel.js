@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { currentUser } from "../../../utils/tokenUtils"; // Ensure this is correctly imported
 import * as XLSX from "xlsx";
 import { bulkTaxRecord } from "../../../services/taxapi";
+import { Branch_fc_code } from "../../../services/erpBranchapi";
 import toast from "react-hot-toast";
 import {
   Box,
@@ -103,7 +104,6 @@ const AddExcel = () => {
   const toggleEditMode = (index) => {
     setEditingRowIndex(index === editingRowIndex ? null : index);
   };
-
   const validateData = () => {
     const newErrors = data.map((row) => ({
       Employee_Name: !row.Employee_Name,
@@ -111,31 +111,31 @@ const AddExcel = () => {
       Basic_Salary: !row.Basic_Salary,
      Transport_Allowance: !row.Transport_Allowance,
       House_Allowance: !row.House_Allowance,
-      //Other_Benefit: !row.Other_Benefit,
     }));
     setErrors(newErrors);
 
-    // Return false if there are any errors
+   
     return newErrors.every((rowErrors) =>
       Object.values(rowErrors).every((error) => !error)
     );
   };
-
   const handleSave = (e) => {
     if (!validateData()) {
       toast.error("Please fill in all required fields.");
       return;
     }
-
     setEmployeeData(data);
     openConfirmationDialog();
   };
-
-  const handleConfirmSave = () => {
-    const taxRecords = employeeData.map((employee) => ({
+  const handleConfirmSave = async () => {
+    try{
+      const taxRecords = await Promise.all(employeeData.map(async (employee) => {
+        const newBranch = await getFc_code(user.branch_id,); 
+   
+    return{
       fullName: employee.Employee_Name,
       benefit: employee.Other_Benefit,
-      branch: user.branch_id,
+      branch: newBranch,
       house: employee.House_Allowance,
       transport: employee.Transport_Allowance,
       tin: employee.Tin_number,
@@ -143,20 +143,24 @@ const AddExcel = () => {
       status: "Draft",
       salary: employee.Basic_Salary,
       draftby: userName,
+    }
     }));
-
+console.log(taxRecords)
     bulkTaxRecord(taxRecords)
-      .then(() => {
+      .then((registerData) => {
         closeConfirmationDialog();
         toast.success("Successfully registered.");
         navigate("/dashboards/tax-list", { state: stateData });
       })
-      .catch((error) => {
+     .catch((error) => {
         console.error(error);
         toast.error("An error occurred while saving data.");
       });
-  };
-
+  } catch (error) {
+    // Handle any errors that occur during the process
+    console.error('Error saving tax records:', error);
+  }
+  }
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -170,6 +174,17 @@ const AddExcel = () => {
     navigate("/tables/basic-table");
   };
 
+  const getFc_code=async(branch_id)=>{
+    let fc_code=0;
+    try {
+      const branch = await Branch_fc_code(branch_id);
+      fc_code=branch.fc_code;
+    } catch (error) {
+      console.log(error);
+    }
+
+    return fc_code;
+  }
   return (
     <>
       <Box>
@@ -366,7 +381,6 @@ const AddExcel = () => {
           </Box>
         )}
       </Box>
-
       <Dialog open={isConfirmationOpen} onClose={closeConfirmationDialog}>
         <DialogTitle>Confirm Save</DialogTitle>
         <DialogContent>
@@ -384,5 +398,4 @@ const AddExcel = () => {
     </>
   );
 };
-
 export default AddExcel;

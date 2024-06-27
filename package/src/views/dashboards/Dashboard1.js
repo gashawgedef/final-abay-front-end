@@ -16,9 +16,8 @@ import {
 } from "@mui/material";
 import { currentUser } from "../../utils/tokenUtils";
 import { get_Submit_branches, month_list, branch_employee_tax_by_status } from "../../services/taxapi";
-import {Addis_Branch_List  } from "../../services/erpBranchapi";
+import {Addis_Branch_List,Branch_fc_code  } from "../../services/erpBranchapi";
 import { test_branch_type } from "../../utils/constants";
-
 const Dashboard1 = () => {
   const user = currentUser();
   const branch = user.branch_id;
@@ -52,7 +51,8 @@ const Dashboard1 = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await branch_employee_tax_by_status(branch, selectedMonth, "Submitted");
+        const newBranch = await getFc_code(branch);
+        const data = await branch_employee_tax_by_status(newBranch, selectedMonth, "Submitted");
         setsubmittedData(data);
       } catch (error) {
         console.log(error);
@@ -82,6 +82,17 @@ const Dashboard1 = () => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+  const getFc_code=async(branch_id)=>{
+    let fc_code=0;
+    try {
+      const branch = await Branch_fc_code(branch_id);
+      fc_code=branch.fc_code;
+    } catch (error) {
+      console.log(error);
+    }
+
+    return fc_code;
+  }
 
   const monthOptionsList = async () => {
     const data = await month_list();
@@ -89,22 +100,20 @@ const Dashboard1 = () => {
       month: month.month,
     }));
   };
-
   const handleSearch = async () => {
     try {
       const data = await get_Submit_branches(selectedMonth);
       setData(data);
-      const submitedTaxData = await branch_employee_tax_by_status(branch, selectedMonth, "Submitted");
+      const newBranch = await getFc_code(branch);
+      const submitedTaxData = await branch_employee_tax_by_status(newBranch, selectedMonth, "Submitted");
       setsubmittedData(submitedTaxData);
     } catch (error) {
       console.log(error);
     }
   };
-
   const doesBranchIdExist = (id) => {
     return data.some(branch => branch.branchId == id);
   };
-
   return (
     <>
     
@@ -126,7 +135,6 @@ const Dashboard1 = () => {
                 ))}
               </Select>
             </Box>
-
             <Box ml={2}>
               <Button onClick={handleSearch} variant="contained" color="success">
                 Search
@@ -141,7 +149,6 @@ const Dashboard1 = () => {
                 whiteSpace: "nowrap",
                 width: "600px",
               }}
-              
             >
              <caption>
                   Number of Branches Submitted for the month <strong style={{ color: "green", fontSize: 20 }}>
@@ -222,5 +229,4 @@ const Dashboard1 = () => {
     </>
   );
 };
-
 export default Dashboard1;
