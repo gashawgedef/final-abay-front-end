@@ -64,7 +64,6 @@ export const get_branch_tax_report = async(branch,month) => {
       throw error;
     }
   };
-
   export const month_list = async() => {
     const url = `${BASE_URL}/people/month`;
     try {

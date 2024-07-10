@@ -17,6 +17,7 @@ import AddIcon from "@mui/icons-material/Add";
 import {currentUser} from "../../utils/tokenUtils";
 import { is_branch_employees_tax_exist } from "../../services/taxapi";
 import toast from "react-hot-toast";
+import { Branch_fc_code } from "../../services/erpBranchapi";
 const BasicTable = () => {
   const user = currentUser();
   const navigate = useNavigate();
@@ -39,7 +40,8 @@ const BasicTable = () => {
       month: selectedMonth,
     };
     const month=`${selectedMonth}/${selectedYear}`;
-    const record = await is_branch_employees_tax_exist(branch,month);
+    const newBranch = await getFc_code(branch);
+    const record = await is_branch_employees_tax_exist(newBranch ,month);
     console.log(record);
     
      if(record==0){
@@ -56,7 +58,8 @@ const BasicTable = () => {
       month: selectedMonth,
     };
     const month=`${selectedMonth}/${selectedYear}`;
-    const record = await is_branch_employees_tax_exist(branch,month);
+    const newBranch = await getFc_code(branch);
+    const record = await is_branch_employees_tax_exist(newBranch,month);
     console.log("recorddddddddddddddddddddddd"+record)
      if(record==0){
      navigate("/tables/AddExcel", { state: data });
@@ -72,7 +75,7 @@ const BasicTable = () => {
   const handleMonthChange = (event) => {
     setSelectedMonth(event.target.value);
   };
-
+  
   const generateYearOptions = () => {
     const years = [];
     for (let year = 2010; year <= 2035; year++) {
@@ -84,7 +87,16 @@ const BasicTable = () => {
     }
     return years;
   };
-
+  const getFc_code=async(branch_id)=>{
+    let fc_code=0;
+    try {
+      const branch = await Branch_fc_code(branch_id);
+      fc_code=branch.fc_code;
+    } catch (error) {
+      console.log(error);
+    }
+    return fc_code;
+  }
   const isButtonDisabled = selectedYear === "" || selectedMonth === "";
   
   return (

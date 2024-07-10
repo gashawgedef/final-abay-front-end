@@ -18,7 +18,7 @@ import { currentUser } from "../../utils/tokenUtils";
 import { get_Submit_branches, month_list, branch_employee_tax_by_status } from "../../services/taxapi";
 import { Addis_Branch_List, Branch_fc_code } from "../../services/erpBranchapi";
 import { test_branch_type } from "../../utils/constants";
-import PdfViewer from "./../dashboards/dashboard1-components/PdfViewer";
+import PdfViewer from '../../components/PdfViewer';  // Adjust the import path accordingly
 
 const Dashboard1 = () => {
   const user = currentUser();
@@ -37,10 +37,7 @@ const Dashboard1 = () => {
   const [selectedMonth, setSelectedMonth] = useState(currentMonth);
   const [monthOptions, setMonthOptions] = useState([]);
   const [showPdf, setShowPdf] = useState(false);
-  const pdfUrl = `${process.env.PUBLIC_URL}/user-guides.pdf`;
-
-  // const pdfUrl = /assets/user-guides.pdf`;
-  // Replace with your PDF file path
+  const pdfUrl = "path/to/your/pdf-file.pdf"; // Replace with your PDF file path
   
   useEffect(() => {
     const fetchFcCode = async () => {
@@ -133,8 +130,6 @@ const Dashboard1 = () => {
 
   return (
     <>
-   {/* <embed src='../../assets/user-guides.pdf' type="application/pdf" width="100%" height="500px" /> */}
-
       {branch_type === test_branch_type ? (
         <Box>
           <Box display="flex" justifyContent="flex-start" alignItems="center">
@@ -145,7 +140,6 @@ const Dashboard1 = () => {
                 displayEmpty
                 sx={{ width: "200px" }}
               >
-              
                 <MenuItem value={selectedMonth}>{selectedMonth}</MenuItem>
                 {monthOptions.map((option) => (
                   <MenuItem key={option.month} value={option.month}>
@@ -160,8 +154,6 @@ const Dashboard1 = () => {
               </Button>
             </Box>
           </Box>
-
-          
           <Box display="flex" flexDirection="column" justifyContent="left" alignItems="left">
             <TableContainer
               component={Paper}
@@ -250,7 +242,12 @@ const Dashboard1 = () => {
               />
             </TableContainer>
           </Box>
-          
+          <Box mt={4}>
+            <Button onClick={() => setShowPdf(!showPdf)} variant="contained" color="primary">
+              {showPdf ? "Hide User Guidelines" : "Show User Guidelines"}
+            </Button>
+            {showPdf && <PdfViewer pdfUrl={pdfUrl} />}
+          </Box>
         </Box>
       ) : (
         <TableContainer
@@ -262,15 +259,6 @@ const Dashboard1 = () => {
           }}
         >
           <h1>Welcome to Abay Bank Branch Pages</h1>
-          <Box mt={4}>
-      <Button
-        onClick={() => window.open(pdfUrl, '_blank')}
-        variant="contained"
-        color="primary"
-      >
-       DownloadUserGuid
-      </Button>
-    </Box>
         </TableContainer>
       )}
     </>

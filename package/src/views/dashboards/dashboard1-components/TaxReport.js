@@ -23,7 +23,7 @@ import { useLocation } from "react-router-dom";
 import { get_branch_tax_report, month_list } from "../../../services/taxapi";
 import { ERP_Branch_List, Addis_Branch_List,Branch_fc_code} from "../../../services/erpBranchapi";
 import { currentUser } from "../../../utils/tokenUtils";
-
+import {head_office_fc_code} from "../../../utils/constants"
 const TaxReport = () => {
   const user = currentUser();
   const branch=user.branch_id;
@@ -130,7 +130,7 @@ useEffect(() => {
         name: branch.name,
       }));
       branches.unshift({
-        id:'000', 
+        id:head_office_fc_code, 
         name: 'Head Office', 
       });
       branches.unshift({

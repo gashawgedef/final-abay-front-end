@@ -16,10 +16,8 @@ import {
 } from "@mui/material";
 import { currentUser } from "../../utils/tokenUtils";
 import { get_Submit_branches, month_list, branch_employee_tax_by_status } from "../../services/taxapi";
-import { Addis_Branch_List, Branch_fc_code } from "../../services/erpBranchapi";
+import {Addis_Branch_List,Branch_fc_code  } from "../../services/erpBranchapi";
 import { test_branch_type } from "../../utils/constants";
-import PdfViewer from "./../dashboards/dashboard1-components/PdfViewer";
-
 const Dashboard1 = () => {
   const user = currentUser();
   const branch = user.branch_id;
@@ -36,12 +34,6 @@ const Dashboard1 = () => {
   const [submittedData, setsubmittedData] = useState([]);
   const [selectedMonth, setSelectedMonth] = useState(currentMonth);
   const [monthOptions, setMonthOptions] = useState([]);
-  const [showPdf, setShowPdf] = useState(false);
-  const pdfUrl = `${process.env.PUBLIC_URL}/user-guides.pdf`;
-
-  // const pdfUrl = /assets/user-guides.pdf`;
-  // Replace with your PDF file path
-  
   useEffect(() => {
     const fetchFcCode = async () => {
       try {
@@ -71,8 +63,10 @@ const Dashboard1 = () => {
       } catch (error) {
         console.log(error);
       }
+
     };
     fetchData();
+   
   }, [fc_code, selectedMonth]);
 
   useEffect(() => {
@@ -97,11 +91,11 @@ const Dashboard1 = () => {
     setPage(0);
   };
 
-  const getFc_code = async (branch_id) => {
-    let fc_code = 0;
+  const getFc_code=async(branch_id)=>{
+    let fc_code=0;
     try {
       const branch = await Branch_fc_code(branch_id);
-      fc_code = branch.fc_code;
+      fc_code=branch.fc_code;
     } catch (error) {
       console.log(error);
     }
@@ -115,7 +109,6 @@ const Dashboard1 = () => {
       month: month.month,
     }));
   };
-
   const handleSearch = async () => {
     try {
       const data = await get_Submit_branches(selectedMonth);
@@ -126,15 +119,12 @@ const Dashboard1 = () => {
       console.log(error);
     }
   };
-
   const doesBranchIdExist = (id) => {
-    return data.some(branch => branch.branchId == id);
+    return data.some(branch => branch.branchId== id);
   };
-
   return (
     <>
-   {/* <embed src='../../assets/user-guides.pdf' type="application/pdf" width="100%" height="500px" /> */}
-
+    
       {branch_type === test_branch_type ? (
         <Box>
           <Box display="flex" justifyContent="flex-start" alignItems="center">
@@ -145,7 +135,6 @@ const Dashboard1 = () => {
                 displayEmpty
                 sx={{ width: "200px" }}
               >
-              
                 <MenuItem value={selectedMonth}>{selectedMonth}</MenuItem>
                 {monthOptions.map((option) => (
                   <MenuItem key={option.month} value={option.month}>
@@ -160,8 +149,6 @@ const Dashboard1 = () => {
               </Button>
             </Box>
           </Box>
-
-          
           <Box display="flex" flexDirection="column" justifyContent="left" alignItems="left">
             <TableContainer
               component={Paper}
@@ -171,11 +158,11 @@ const Dashboard1 = () => {
                 width: "600px",
               }}
             >
-              <caption>
-                Number of Branches Submitted for the month <strong style={{ color: "green", fontSize: 20 }}>
-                  {selectedMonth} is {data.length}
-                </strong>
-              </caption>
+             <caption>
+                  Number of Branches Submitted for the month <strong style={{ color: "green", fontSize: 20 }}>
+                    {selectedMonth} is {data.length}
+                  </strong>
+                </caption>
               <Table>
                 <TableHead>
                   <TableRow>
@@ -202,22 +189,6 @@ const Dashboard1 = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {/* Manually add the "Head Office" row with fc_code 000 */}
-                  <TableRow key="head-office">
-                    <TableCell>
-                      <Typography>1</Typography> {/* Static entry index */}
-                    </TableCell>
-                    <TableCell>
-                      <Typography align="left">Head Office</Typography>
-                    </TableCell>
-                    <TableCell>000</TableCell>
-      
-                    <TableCell style={{ color: doesBranchIdExist('000') ? 'green' : '#D2691E' }}>
-                      {doesBranchIdExist('000') ? "submitted" : "Not Submitted"}
-                    </TableCell>
-                  </TableRow>
-
-                  {/* Dynamically add other branches */}
                   {allBranch
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row, index) => {
@@ -225,7 +196,7 @@ const Dashboard1 = () => {
                       return (
                         <TableRow key={row.id}>
                           <TableCell>
-                            <Typography>{index + 2}</Typography> {/* Increment by 2 to account for "Head Office" */}
+                            <Typography>{index + 1}</Typography>
                           </TableCell>
                           <TableCell>
                             <Typography align="left">{row.name}</Typography>
@@ -250,7 +221,6 @@ const Dashboard1 = () => {
               />
             </TableContainer>
           </Box>
-          
         </Box>
       ) : (
         <TableContainer
@@ -262,19 +232,9 @@ const Dashboard1 = () => {
           }}
         >
           <h1>Welcome to Abay Bank Branch Pages</h1>
-          <Box mt={4}>
-      <Button
-        onClick={() => window.open(pdfUrl, '_blank')}
-        variant="contained"
-        color="primary"
-      >
-       DownloadUserGuid
-      </Button>
-    </Box>
         </TableContainer>
       )}
     </>
   );
 };
-
 export default Dashboard1;

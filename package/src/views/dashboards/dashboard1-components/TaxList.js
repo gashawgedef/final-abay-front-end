@@ -93,7 +93,6 @@ const TaxList = () => {
       const options = await monthOptionsList();
       setMonthOptions(options);
     };
-
     fetchMonthOptions();
   }, []);
 
@@ -202,9 +201,6 @@ const TaxList = () => {
       // Handle error here
     }
   }
-
-  console.log(data);
-
   const totalTax = (data) => {
     const totalTaxAmount = data.map(item => {
         const totalIncome = calculateTotalIncome(item.salary, item.house, item.transport, item.benefit);
